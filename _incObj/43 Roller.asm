@@ -20,7 +20,7 @@ Roll_Main:	; Routine 0
 		tst.w	d1
 		bpl.s	locret_E052
 		add.w	d1,obY(a0)	; match roller's position with the floor
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
@@ -39,25 +39,7 @@ Roll_Action:	; Routine 2
 		jsr	Roll_Index2(pc,d1.w)
 		lea	Ani_Roll(pc),a1
 		jsr	(AnimateSprite).w
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		move.w	(v_screenposx).w,d1
-		subi.w	#$80,d1
-		andi.w	#$FF80,d1
-		sub.w	d1,d0
-		cmpi.w	#$280,d0
-		bgt.s	Roll_ChkGone
-		jmp	(DisplaySprite).w
-; ===========================================================================
-
-Roll_ChkGone:
-		move.w	obRespawnNo(a0),d0
-		beq.s	Roll_Delete
-		movea.w	d0,a2
-		bclr	#7,(a2)
-
-Roll_Delete:
-		jmp	(DeleteObject).w
+		jmp	(RememberState).w
 ; ===========================================================================
 Roll_Index2:	dc.w Roll_RollChk-Roll_Index2
 		dc.w Roll_RollNoChk-Roll_Index2
@@ -130,7 +112,7 @@ Roll_MatchFloor:
 		bpl.s	locret_E150
 		add.w	d1,obY(a0)	; match Roller's position with the floor
 		subq.b	#2,ob2ndRout(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 
 locret_E150:
 		rts

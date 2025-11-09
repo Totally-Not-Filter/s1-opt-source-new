@@ -51,7 +51,7 @@ Sign_Touch:	; Routine 2
 Sign_Spin:	; Routine 4
 		subq.w	#1,spintime(a0)	; subtract 1 from spin time
 		bpl.s	.chksparkle	; if time remains, branch
-		move.w	#60,spintime(a0) ; set spin cycle time to 1 second
+		move.w	#60-1,spintime(a0) ; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)	; next spin cycle
 		cmpi.b	#3,obAnim(a0)	; have 3 spin cycles completed?
 		bne.s	.chksparkle	; if not, branch
@@ -60,7 +60,7 @@ Sign_Spin:	; Routine 4
 .chksparkle:
 		subq.w	#1,sparkletime(a0) ; subtract 1 from time delay
 		bpl.s	.fail		; if time remains, branch
-		move.w	#$B,sparkletime(a0) ; set time between sparkles to $B frames
+		move.w	#12-1,sparkletime(a0) ; set time between sparkles to 12 frames
 		moveq	#0,d0
 		move.b	sparkle_id(a0),d0 ; get sparkle id
 		addq.b	#2,sparkle_id(a0) ; increment sparkle counter

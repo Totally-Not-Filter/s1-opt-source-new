@@ -42,7 +42,7 @@ Surf_Action:	; Routine 2
 		btst	#bitStart,(v_jpadpress1).w ; is Start button pressed?
 		beq.s	.animate	; if not, branch
 		addq.b	#3,obFrame(a0)	; use different frames
-		move.b	#1,surf_freeze(a0) ; stop animation
+		st.b	surf_freeze(a0) ; stop animation
 		jmp	(DisplaySprite).w
 ; ===========================================================================
 

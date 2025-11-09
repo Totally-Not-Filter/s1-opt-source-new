@@ -58,4 +58,7 @@ ADoor_Animate:
 		bsr.w	SolidObject
 
 .remember:
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject).w

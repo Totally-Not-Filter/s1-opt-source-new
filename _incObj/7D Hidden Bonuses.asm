@@ -51,12 +51,8 @@ Bonus_Main:	; Routine 0
 		jsr	(AddPoints).l
 
 .chkdel:
-		out_of_range.s	.delete
+		out_of_range.s	Bonus_Display_Delete
 		rts
-
-.delete:
-		jmp	(DeleteObject).w
-
 ; ===========================================================================
 .points:	dc.w 0			; Bonus points array
 		dc.w 1000

@@ -438,18 +438,15 @@ FinishTrackUpdate:
 
 ; sub_71D9E: NoteFillUpdate
 NoteTimeoutUpdate:
-		tst.b	SMPS_Track.NoteTimeout(a5)		; Is note fill on?
-		beq.s	.locret
 		subq.b	#1,SMPS_Track.NoteTimeout(a5)		; Update note fill timeout
-		bne.s	.locret					; Return if it hasn't expired
+		beq.s	.doupdate
+		rts
+.doupdate:
 		bset	#1,SMPS_Track.PlaybackControl(a5)	; Put track at rest
 		addq.w	#4,sp					; Do not return to caller
 		tst.b	SMPS_Track.VoiceControl(a5)		; Is this a PSG track?
 		bmi.w	PSGNoteOff				; If yes, branch
 		bra.w	FMNoteOff
-; locret_71DC4:
-.locret:
-		rts
 ; End of function NoteTimeoutUpdate
 
 
@@ -535,9 +532,6 @@ FMSetRest:
 ; loc_71E50:
 PauseMusic:
 		bmi.s	.unpausemusic	; Branch if music is being unpaused
-		cmpi.b	#2,SMPS_RAM.f_pausemusic(a6)
-		beq.s	locret_71E48
-		move.b	#2,SMPS_RAM.f_pausemusic(a6)
 		moveq	#signextendB($B4),d0	; Command to set AMS/FMS/panning
 		moveq	#0,d1		; No panning, AMS or FMS
 		bsr.w	WriteFMI	; FM1
@@ -2031,10 +2025,9 @@ cfSetVoice:
 SetVoice:
 		subq.w	#1,d0
 		bmi.s	.havevoiceptr
-		move.w	#25,d1
 ; loc_72C56:
 .voicemultiply:
-		adda.w	d1,a1
+		lea	25(a1),a1
 		dbf	d0,.voicemultiply
 ; loc_72C5C:
 .havevoiceptr:
@@ -2105,14 +2098,13 @@ SendVoiceTL:
 .gotvoiceptr:
 		subq.w	#1,d0
 		bmi.s	.gotvoice
-		move.w	#25,d1
 ; loc_72CE0:
 .voicemultiply:
-		adda.w	d1,a1
+		lea	25(a1),a1
 		dbf	d0,.voicemultiply
 ; loc_72CE6:
 .gotvoice:
-		adda.w	#21,a1				; Want TL
+		lea	21(a1),a1				; Want TL
 		lea	FMInstrumentTLTable(pc),a2
 		move.b	SMPS_Track.FeedbackAlgo(a5),d0	; Get feedback/algorithm
 		andi.w	#7,d0				; Want only algorithm
@@ -2290,7 +2282,7 @@ cfSetPSGTone:
 cfRepeatAtPos:
 		moveq	#0,d0
 		move.b	(a4)+,d0				; Loop index
-		move.b	(a4)+,d1				; Repeat count
+		move.b	(a4)+,d1
 		tst.b	SMPS_Track.LoopCounters(a5,d0.w)	; Has this loop already started?
 		bne.s	.loopexists				; Branch if yes
 		move.b	d1,SMPS_Track.LoopCounters(a5,d0.w)	; Initialize repeat count

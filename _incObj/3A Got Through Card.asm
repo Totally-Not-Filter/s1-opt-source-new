@@ -49,7 +49,7 @@ loc_C5CA:
 		move.b	d0,obFrame(a1)
 		move.l	#Map_Got,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		move.b	#0,obRender(a1)
+		clr.b	obRender(a1)
 		lea	object_size(a1),a1
 		dbf	d1,Got_Loop	; repeat 6 times
 
@@ -87,11 +87,11 @@ loc_C61A:
 		cmpi.b	#4,obFrame(a0)
 		bne.s	loc_C5FE
 		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
+		move.w	#180-1,obTimeFrame(a0) ; set time delay to 3 seconds
 
 Got_Wait:	; Routine 4, 8, $C
 		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time delay
-		bne.s	Got_Display
+		bpl.s	Got_Display
 		addq.b	#2,obRoutine(a0)
 
 Got_Display:
@@ -123,7 +123,7 @@ Got_ChkBonus:
 		addq.b	#4,obRoutine(a0)
 
 Got_SetDelay:
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
+		move.w	#180-1,obTimeFrame(a0) ; set time delay to 3 seconds
 
 locret_C692:
 		rts
