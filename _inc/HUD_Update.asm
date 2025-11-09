@@ -169,7 +169,6 @@ loc_1C842:
 		moveq	#$10-1,d1
 		move.w	(a2)+,d0
 		bmi.s	loc_1C85E
-		lsl.w	#5,d0
 		lea	(a1,d0.w),a3
 
 loc_1C852:
@@ -190,7 +189,7 @@ loc_1C85E:
 ; End of function Hud_Base
 
 ; ===========================================================================
-Hud_TilesBase:	dc.w $16, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,	0, 0, $14, 0, 0
+Hud_TilesBase:	dc.w $16*32, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,	0, 0, $14*32, 0, 0
 Hud_TilesZero:	dc.w $FFFF, $FFFF, 0, 0
 ; ---------------------------------------------------------------------------
 ; Subroutine to load debug mode numbers patterns
