@@ -49,7 +49,7 @@ AniArt_GHZ_Waterfall:
 
 .isframe0:
 		locVRAM	ArtTile_GHZ_Waterfall*tile_size		; VRAM address
-		move.w	#.size-1,d1	; number of 8x8 tiles
+		moveq	#.size-1,d1	; number of 8x8 tiles
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -70,7 +70,7 @@ AniArt_GHZ_Bigflower:
 
 .isframe0:
 		locVRAM	ArtTile_GHZ_Big_Flower_1*tile_size
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -98,7 +98,7 @@ AniArt_GHZ_Smallflower:
 		locVRAM	ArtTile_GHZ_Small_Flower*tile_size
 		lea	(Art_GhzFlower2).l,a1 ; load small flower patterns
 		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 
 .end:
@@ -133,7 +133,7 @@ AniArt_MZ_Lava:
 		mulu.w	#.size*tile_size,d0
 		adda.w	d0,a1		; jump to appropriate tile
 		locVRAM	ArtTile_MZ_Animated_Lava*tile_size
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bsr.w	LoadTiles
 
 AniArt_MZ_Magma:
@@ -148,20 +148,18 @@ AniArt_MZ_Magma:
 		adda.w	d0,a4		; jump to appropriate tile
 		locVRAM	ArtTile_MZ_Animated_Magma*tile_size
 		moveq	#0,d3
-		move.b	(v_lani1_frame).w,d3
-		addq.b	#1,(v_lani1_frame).w ; increment frame counter (unused)
 		move.b	(v_oscillate+$A).w,d3 ; get oscillating value
-		move.w	#3,d2
+		moveq	#3,d2
 
 .loop:
 		move.w	d3,d0
 		add.w	d0,d0
 		andi.w	#$1E,d0
-		lea	(AniArt_MZextra).l,a3
+		lea	AniArt_MZextra(pc),a3
 		move.w	(a3,d0.w),d0
 		lea	(a3,d0.w),a3
 		movea.l	a4,a1
-		move.w	#$1F,d1
+		moveq	#$1F,d1
 		jsr	(a3)
 		addq.w	#4,d3
 		dbf	d2,.loop
@@ -173,7 +171,7 @@ AniArt_MZ_Torch:
 .size		= 6	; number of tiles per frame
 
 		subq.b	#1,(v_lani2_time).w ; decrement timer
-		bpl.w	.end		; branch if not 0
+		bpl.s	.end		; branch if not 0
 		
 		move.b	#8-1,(v_lani2_time).w ; time to display each frame
 		lea	(Art_MzTorch).l,a1 ; load torch patterns
@@ -184,7 +182,7 @@ AniArt_MZ_Torch:
 		mulu.w	#.size*tile_size,d0
 		adda.w	d0,a1		; jump to appropriate tile
 		locVRAM	ArtTile_MZ_Torch*tile_size
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 
 .end:
@@ -219,7 +217,7 @@ AniArt_SBZ:
 		subq.w	#1,d0
 		mulu.w	#.size*tile_size,d0
 		lea	(a1,d0.w),a1
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -227,10 +225,10 @@ AniArt_SBZ:
 		move.b	#180,(v_lani2_frame).w ; time between smoke puffs (3 seconds)
 
 .clearsky:
-		move.w	#(.size/2)-1,d1
+		moveq	#(.size/2)-1,d1
 		bsr.w	LoadTiles
 		lea	(Art_SbzSmoke).l,a1
-		move.w	#(.size/2)-1,d1
+		moveq	#(.size/2)-1,d1
 		bra.w	LoadTiles	; load blank tiles for no smoke puff
 ; ===========================================================================
 
@@ -256,7 +254,7 @@ AniArt_SBZ:
 		subq.w	#1,d0
 		mulu.w	#.size*tile_size,d0
 		lea	(a1,d0.w),a1
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -293,11 +291,11 @@ AniArt_Ending_BigFlower:
 
 .isframe0:
 		locVRAM	ArtTile_GHZ_Big_Flower_1*tile_size
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bsr.w	LoadTiles
 		movea.l	a2,a1
 		locVRAM	ArtTile_GHZ_Big_Flower_2*tile_size
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -320,7 +318,7 @@ AniArt_Ending_SmallFlower:
 		locVRAM	ArtTile_GHZ_Small_Flower*tile_size
 		lea	(Art_GhzFlower2).l,a1 ; load small flower patterns
 		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 .sequence:	dc.b 0,	0, 0, 1, 2, 2, 2, 1
@@ -343,7 +341,7 @@ AniArt_Ending_Flower3:
 		locVRAM	ArtTile_GHZ_Flower_3*tile_size
 		lea	(v_128x128_end-$1000+$400).l,a1 ; load special flower patterns (from RAM)
 		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 ; ===========================================================================
 AniArt_Ending_Flower3_sequence:	dc.b 0,	1, 2, 1
@@ -366,14 +364,11 @@ AniArt_Ending_Flower4:
 		locVRAM	ArtTile_GHZ_Flower_4*tile_size
 		lea	(v_128x128_end-$1000+$A00).l,a1 ; load special flower patterns (from RAM)
 		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
-		bra.w	LoadTiles
+		moveq	#.size-1,d1
+		bra.s	LoadTiles
 ; ===========================================================================
 
 .end:
-		rts
-; ===========================================================================
-
 AniArt_none:
 		rts
 
@@ -583,7 +578,7 @@ AniArt_GiantRing:
 		; Send VDP command (write to VRAM at address contained in v_gfxbigring)
 		move.l	d0,4(a6)
 
-		move.w	#.size-1,d1
+		moveq	#.size-1,d1
 		bra.w	LoadTiles
 
 ; End of function AniArt_GiantRing
