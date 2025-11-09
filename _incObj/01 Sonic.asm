@@ -904,13 +904,13 @@ Sonic_ChkRoll:
 Sonic_Jump:
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0	; is A, B or C pressed?
-		beq.w	.return	; if not, branch
+		beq.s	Sonic_ChkRoll.ismoving	; if not, branch
 		moveq	#0,d0
 		move.b	obAngle(a0),d0
 		addi.b	#$80,d0
 		bsr.w	sub_14D48
 		cmpi.w	#6,d1
-		blt.w	.return
+		blt.s	Sonic_ChkRoll.ismoving
 		move.w	#$680,d2	; set initial jump force.
 		btst	#6,obStatus(a0)	; is Sonic underwater?
 		beq.s	.notunderwater	; if not, continue.
