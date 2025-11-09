@@ -280,7 +280,7 @@ loc_1B9A4:
 		move.l	(a4,d2.w),obID(a1)
 		move.b	3(a0),obSubtype(a1)
 		move.w	a3,obRespawnNo(a1)
-		bsr.w	CreateNewSprite4
+		bsr.s	CreateNewSprite4
 		bne.s	loc_1B9FA
 
 loc_1B9F2:
@@ -312,7 +312,7 @@ sub_1BA0C:
 		move.l	(a4,d2.w),obID(a1)
 		move.b	(a0)+,obSubtype(a1)
 		move.w	a3,obRespawnNo(a1)
-;CreateNewSprite4:
+CreateNewSprite4:
 		subq.w	#1,d0
 		bmi.s	.found
 
@@ -421,7 +421,7 @@ loc_1BAB6:
 		move.b	(a0)+,obSubtype(a1)
 		move.w	a3,obRespawnNo(a1)
 
-CreateNewSprite4:
+;CreateNewSprite4:
 		subq.w	#1,d0
 		bmi.s	locret_1BAF0
 
