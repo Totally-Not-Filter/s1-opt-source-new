@@ -564,7 +564,6 @@ PauseMusic:
 ; loc_71E94:
 .unpausemusic:
 		clr.b	SMPS_RAM.f_pausemusic(a6)
-		moveq	#SMPS_Track.len,d3
 		lea	SMPS_RAM.v_music_fm_tracks(a6),a5
 		moveq	#SMPS_MUSIC_FM_TRACK_COUNT-1,d4	; 6 FM + 1 DAC tracks
 ; loc_71EA0:
@@ -578,7 +577,7 @@ PauseMusic:
 		bsr.w	WriteFMIorII
 ; loc_71EB8:
 .bgmfmnext:
-		adda.w	d3,a5
+		lea	SMPS_Track.len(a5),a5
 		dbf	d4,.bgmfmloop
 
 		lea	SMPS_RAM.v_sfx_fm_tracks(a6),a5
@@ -594,7 +593,7 @@ PauseMusic:
 		bsr.w	WriteFMIorII
 ; loc_71EDC:
 .sfxfmnext:
-		adda.w	d3,a5
+		lea	SMPS_Track.len(a5),a5
 		dbf	d4,.sfxfmloop
 
 		lea	SMPS_RAM.v_spcsfx_track_ram(a6),a5
