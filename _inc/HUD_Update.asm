@@ -285,7 +285,7 @@ loc_1C8F4:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1C8FE
-		move.w	#1,d4
+		moveq	#1,d4
 
 loc_1C8FE:
 		tst.w	d4

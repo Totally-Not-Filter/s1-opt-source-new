@@ -48,7 +48,7 @@ loc_1C9CC:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1C9D6
-		move.w	#1,d4
+		moveq	#1,d4
 
 loc_1C9D6:
 		lsl.w	#6,d2
@@ -104,7 +104,7 @@ loc_1CA26:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1CA30
-		move.w	#1,d4
+		moveq	#1,d4
 
 loc_1CA30:
 		tst.w	d4
@@ -176,7 +176,7 @@ loc_1CA98:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1CAA2
-		move.w	#1,d4
+		moveq	#1,d4
 
 loc_1CAA2:
 		tst.w	d4
