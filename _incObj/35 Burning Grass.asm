@@ -46,16 +46,16 @@ loc_B238:	; Routine 2
 		add.w	objoff_3C(a0),d0
 		move.w	d0,obY(a0)
 		cmpi.w	#$84,d1
-		bhs.s	loc_B2B0
+		bhs.s	GFire_Animate
 		addi.l	#$10000,obX(a0)
 		cmpi.w	#$80,d1
-		bhs.s	loc_B2B0
+		bhs.s	GFire_Animate
 		move.l	obX(a0),d0
 		addi.l	#$80000,d0
 		andi.l	#$FFFFF,d0
-		bne.s	loc_B2B0
+		bne.s	GFire_Animate
 		bsr.w	FindNextFreeObj
-		bne.s	loc_B2B0
+		bne.s	GFire_Animate
 		_move.l	#GrassFire,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	d2,objoff_2C(a1)

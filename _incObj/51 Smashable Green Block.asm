@@ -38,7 +38,10 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 		bne.s	.smash		; if yes, branch
 
 .notspinning:
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 .smash:

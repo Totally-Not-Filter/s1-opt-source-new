@@ -45,7 +45,7 @@ Brick_Action:	; Routine 2
 		out_of_range.s	.delete
 		jmp	(DisplaySprite).w
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 Brick_TypeIndex:dc.w Brick_Type00-Brick_TypeIndex
 		dc.w Brick_Type01-Brick_TypeIndex

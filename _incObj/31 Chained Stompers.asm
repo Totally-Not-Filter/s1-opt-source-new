@@ -154,7 +154,7 @@ CStom_ChkDel:
 		out_of_range.s	.delete
 		jmp	(DisplaySprite).w
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 CStom_Types:

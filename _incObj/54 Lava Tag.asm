@@ -24,15 +24,7 @@ LTag_Main:	; Routine 0
 		move.b	#$84,obRender(a0)
 
 LTag_ChkDel:	; Routine 2
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		move.w	(v_screenposx).w,d1
-		subi.w	#$80,d1
-		andi.w	#$FF80,d1
-		sub.w	d1,d0
-		bmi.s	.delete
-		cmpi.w	#$280,d0
-		bhi.s	.delete
+		out_of_range.s	.delete
 		rts
 .delete:
 		jmp	(DeleteObject).w

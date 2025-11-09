@@ -107,11 +107,7 @@ LWall_Solid:	; Routine 2
 ; ===========================================================================
 
 .chkgone:
-		move.w	obRespawnNo(a0),d0
-		movea.w	d0,a2
-		bclr	#7,(a2)
-		move.b	#8,obRoutine(a0)
-		rts
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 LWall_Move:	; Routine 6

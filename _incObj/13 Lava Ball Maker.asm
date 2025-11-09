@@ -10,7 +10,7 @@ LavaMaker:
 		out_of_range.s	.delete
 		rts
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 LavaM_Index:	dc.w LavaM_Main-LavaM_Index
 		dc.w LavaM_MakeLava-LavaM_Index

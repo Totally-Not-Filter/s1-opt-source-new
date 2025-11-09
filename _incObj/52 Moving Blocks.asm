@@ -75,7 +75,7 @@ MBlock_ChkDel:
 		out_of_range.s	.delete,mblock_origX(a0)
 		jmp	(DisplaySprite).w
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 MBlock_Move:

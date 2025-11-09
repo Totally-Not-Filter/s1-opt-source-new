@@ -58,7 +58,10 @@ CFlo_Touch:	; Routine 2
 		bset	#0,obRender(a0)
 
 .remstate:
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 CFlo_Collapse:	; Routine 4
@@ -75,7 +78,10 @@ CFlo_WalkOff:	; Routine $A
 		bsr.w	ExitPlatform
 		move.w	obX(a0),d2
 		bsr.w	MvSonicOnPtfm2
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; End of function CFlo_WalkOff
 
 ; ===========================================================================

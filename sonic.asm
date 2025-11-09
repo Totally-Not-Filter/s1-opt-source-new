@@ -26,6 +26,8 @@ zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions s
 
 debugbuild = 1
 
+dummymapfix = 0
+
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
@@ -35,7 +37,12 @@ debugbuild = 1
 ; ===========================================================================
 
 StartOfRom:
-Vectors:	dc.l v_systemstack	; Initial stack pointer value
+Vectors:
+	if dummymapfix
+		dc.l 0	; Initial stack pointer value
+	else
+		dc.l v_systemstack	; Initial stack pointer value
+	endif
 		dc.l EntryPoint			; Start of program
 		dc.l BusError			; Bus error
 		dc.l AddressError		; Address error (4)
@@ -153,6 +160,9 @@ ErrorTrap:
 ; ===========================================================================
 
 EntryPoint:
+	if dummymapfix
+		lea	v_systemstack.w,sp
+	endif
 		tst.l	z80_port_1_control ; test port A & B control registers
 		bne.s	PortA_Ok
 		tst.w	z80_expansion_control ; test port C control register

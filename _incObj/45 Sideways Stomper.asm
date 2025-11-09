@@ -105,7 +105,7 @@ SStom_ChkDel:
 		out_of_range.s	.delete,objoff_3A(a0)
 		jmp	(DisplaySprite).w
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 

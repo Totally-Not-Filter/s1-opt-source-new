@@ -10,7 +10,7 @@ GlassBlock:
 		out_of_range.s	.delete
 		jmp	(DisplaySprite).w
 .delete:
-		jmp	(DeleteObject).w
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 Glass_Index:	dc.w Glass_Main-Glass_Index
 		dc.w Glass_Block012-Glass_Index
@@ -132,13 +132,13 @@ Glass_Type00:
 
 Glass_Type01:
 		move.b	(v_oscillate+$12).w,d0
-		move.w	#$40,d1
+		moveq	#$40,d1
 		bra.s	loc_B514
 ; ===========================================================================
 
 Glass_Type02:
 		move.b	(v_oscillate+$12).w,d0
-		move.w	#$40,d1
+		moveq	#$40,d1
 		neg.w	d0
 		add.w	d1,d0
 
