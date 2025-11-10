@@ -323,7 +323,7 @@ GameProgram:
 CheckSumCheck:
 		lea	v_crossresetram.w,a6
 		moveq	#0,d7
-		move.w	#bytesToLcnt(v_ram_end-v_crossresetram),d6
+		moveq	#bytesToLcnt(v_ram_end-v_crossresetram),d6
 .clearRAM:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($FE00-$FFFF)
@@ -4681,8 +4681,9 @@ loc_7BB6:
 
 Swing_Move2:
 		bsr.w	CalcSine
-		move.w	objoff_38(a0),d2
-		move.w	objoff_3A(a0),d3
+;		move.w	objoff_38(a0),d2
+;		move.w	objoff_3A(a0),d3
+		movem.w	objoff_38(a0),d2/d3
 		lea	obSubtype(a0),a2
 		moveq	#0,d6
 		move.b	(a2)+,d6
