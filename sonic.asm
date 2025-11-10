@@ -3156,7 +3156,7 @@ Level_SkipScroll:
 		jsr	(BuildSprites).w
 		bsr.w	ObjPosLoad
 		bsr.w	RingsManager
-		jsr	(AnimateLevelGfx).l
+		bsr.w	AnimateLevelGfx
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
@@ -3203,7 +3203,7 @@ Level_FDLoop:
 		jsr	(BuildSprites).w
 		bsr.w	ObjPosLoad
 		bsr.w	RingsManager
-		jsr	(AnimateLevelGfx).l
+		bsr.w	AnimateLevelGfx
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_3BC8
 		move.w	#2,(v_palchgspeed).w
@@ -3399,8 +3399,8 @@ GM_Special:
 		clearRAM v_timingvariables
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 
-		clr.b	(f_wtr_state).w
-		clr.w	(f_restart).w
+		move.b	d0,(f_wtr_state).w
+		move.w	d0,(f_restart).w
 		moveq	#palid_Special,d0
 		bsr.w	PalLoad_Fade	; load special stage palette
 		jsr	(SS_Load).l		; load SS layout data
@@ -3409,10 +3409,11 @@ GM_Special:
 		move.l	d0,(v_screenposy).w
 		move.l	#SonicSpecial,(v_player).w ; load special stage Sonic object
 		bsr.w	PalCycle_SS
-		clr.w	(v_ssangle).w	; set stage angle to "upright"
+		moveq	#0,d0
+		move.w	d0,(v_ssangle).w	; set stage angle to "upright"
 		move.w	#$40,(v_ssrotate).w ; set stage rotation speed
 		move.b	#bgm_SS,(v_snddriver_ram.v_soundqueue0).w
-		clr.w	(v_btnpushtime1).w
+		move.w	d0,(v_btnpushtime1).w
 		lea	Demo_SS(pc),a1
 		move.b	1(a1),(v_btnpushtime2).w
 		subq.b	#1,(v_btnpushtime2).w
@@ -3600,7 +3601,7 @@ loc_48F2:
 		swap	d3
 
 loc_491C:
-		adda.w	#$80,a2
+		lea	$80(a2),a2
 		dbf	d7,loc_48BE
 
 		lea	(v_ssbuffer1).l,a1
@@ -3619,7 +3620,7 @@ loc_491C:
 
 
 PalCycle_SS:
-		tst.w	(f_pause).w
+		tst.b	(f_pause).w
 		bne.s	locret_49E6
 		subq.w	#1,(v_palss_time).w
 		bpl.s	locret_49E6
@@ -3696,7 +3697,7 @@ loc_49F4:
 		move.l	8(a1),(a2)+
 
 loc_4A18:
-		adda.w	#$C,a1
+		lea	$C(a1),a1
 		lea	(v_palette+$5A).w,a2
 		cmpi.w	#$A,d0
 		blo.s	loc_4A2E
@@ -3794,7 +3795,7 @@ Pal_SSCyc2:	binclude	"palette/Cycle - Special Stage 2.bin"
 SS_BGAnimate:
 		move.w	(v_ssbganim).w,d0
 		bne.s	loc_4BF6
-		move.w	#0,(v_bgscreenposy).w
+		clr.w	(v_bgscreenposy).w
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
 
 loc_4BF6:
@@ -4187,7 +4188,6 @@ End_MoveSon3:
 		addq.b	#2,(v_sonicend).w
 		move.w	#$A0,(v_player+obX).w
 		move.l	#EndSonic,(v_player).w ; load Sonic ending sequence object
-;		clr.w	(v_player+obRoutine).w
 		clr.b	(v_player+obRoutine).w
 		clr.b	(v_player+ob2ndRout).w
 
@@ -4475,6 +4475,7 @@ LevelLayoutLoad:
 
 		include	"_inc/Rings Manager.asm"
 		include	"_inc/Object Manager.asm"
+		include	"_inc/AnimateLevelGfx.asm"
 
 		include	"_inc/DynamicLevelEvents.asm"
 
@@ -5467,7 +5468,6 @@ Map_WFall:	include	"_maps/Waterfalls.asm"
 		include	"_incObj/01 Sonic.asm"
 		include	"_incObj/0A Drowning Countdown.asm"
 
-
 ; ---------------------------------------------------------------------------
 ; Subroutine to play music for LZ/SBZ3 after a countdown
 ; ---------------------------------------------------------------------------
@@ -5758,7 +5758,7 @@ ObjHitWallRight:
 		add.w	obX(a0),d3
 		move.w	obY(a0),d2
 		lea	(v_anglebuffer).w,a4
-		move.b	#0,(a4)
+		clr.b	(a4)
 		movea.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$D,d5
@@ -5923,7 +5923,7 @@ ObjHitWallLeft:
 		move.w	obY(a0),d2
 		eori.w	#$F,d3
 		lea	(v_anglebuffer).w,a4
-		move.b	#0,(a4)
+		clr.b	(a4)
 		movea.w	#-$10,a3
 		move.w	#$400,d6
 		moveq	#$D,d5
@@ -6188,9 +6188,8 @@ loc_1B210:
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1
 		movea.w	(a5)+,a3
-		moveq	#0,d1
-		move.b	(a1)+,d1
-		subq.b	#1,d1
+		move.w	(a1)+,d1
+		subq.w	#1,d1
 		bmi.s	loc_1B268
 		jsr	(BuildSpr_Normal).l
 
@@ -6580,7 +6579,8 @@ SS_ChkEmldRepeat:
 
 SS_LoadData:
 		; Load player position data
-		lsl.w	#2,d0
+		add.w	d0,d0
+		add.w	d0,d0
 		lea	SS_StartLoc(pc,d0.w),a1
 		move.w	(a1)+,(v_player+obX).w
 		move.w	(a1)+,(v_player+obY).w
@@ -6592,10 +6592,11 @@ SS_LoadData:
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
 		lea	(v_ssbuffer1).l,a1
+		moveq	#0,d1
 		move.w	#(v_ssbuffer2-v_ssbuffer1)/4-1,d0
 
 SS_ClrRAM3:
-		clr.l	(a1)+
+		move.l	d1,(a1)+
 		dbf	d0,SS_ClrRAM3
 
 		; Copy $1000 of data from v_ssbuffer2 to v_ssblockbuffer,
@@ -6652,8 +6653,6 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 		include	"_incObj/09 Sonic in Special Stage.asm"
 
 		include	"_incObj/10.asm"
-
-		include	"_inc/AnimateLevelGfx.asm"
 
 		include	"_incObj/21 HUD.asm"
 Map_HUD:	include	"_maps/HUD.asm"
