@@ -2943,8 +2943,9 @@ Level_ClrRam:
 		move.w	d0,(v_waterpos1).w ; set water heights
 		move.w	d0,(v_waterpos2).w
 		move.w	d0,(v_waterpos3).w
-		clr.b	(v_wtr_routine).w ; clear water routine counter
-		clr.b	(f_wtr_state).w	; clear water state
+		moveq	#0,d0
+		move.b	d0,(v_wtr_routine).w ; clear water routine counter
+		move.b	d0,(f_wtr_state).w	; clear water state
 		move.b	#1,(f_water).w	; enable water
 
 Level_LoadPal:
@@ -3023,8 +3024,9 @@ Level_ChkDebug:
 	endif
 
 Level_ChkWater:
-		move.w	#0,(v_jpadhold2).w
-		move.w	#0,(v_jpadhold1).w
+		moveq	#0,d0
+		move.w	d0,(v_jpadhold2).w
+		move.w	d0,(v_jpadhold1).w
 		cmpi.b	#id_LZ,v_zone.w ; is level LZ?
 		bne.s	Level_LoadObj	; if not, branch
 		move.l	#WaterSurface,(v_watersurface1).w ; load water surface object
