@@ -2861,7 +2861,7 @@ MusicList:
 ; ---------------------------------------------------------------------------
 
 GM_Level:
-		sf.b	v_pre_level.w
+		st.b	v_pre_level.w
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,(v_snddriver_ram.v_soundqueue0).w
