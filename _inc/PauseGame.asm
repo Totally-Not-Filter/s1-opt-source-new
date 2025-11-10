@@ -14,14 +14,15 @@ PauseGame:
 		beq.s	Pause_DoNothing	; if not, branch
 
 Pause_StopGame:
-		move.b	#1,(f_pause).w	; freeze time
+		st.b	(f_pause).w	; freeze time
 		move.b	#1,(v_snddriver_ram.f_pausemusic).w ; pause music
 
 Pause_Loop:
 		move.w	#VBla_10,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		tst.b	(f_slomocheat).w ; is slow-motion cheat on?
-		beq.s	Pause_ChkStart	; if not, branch
+	if debugbuild
+;		tst.b	(f_slomocheat).w ; is slow-motion cheat on?
+;		beq.s	Pause_ChkStart	; if not, branch
 		btst	#bitA,(v_jpadpress1).w ; is button A pressed?
 		beq.s	Pause_ChkBC	; if not, branch
 		move.l	#GM_Title,(v_gamemode).w ; set game mode to 4 (title screen)
@@ -35,6 +36,7 @@ Pause_ChkBC:
 		bne.s	Pause_SlowMo	; if yes, branch
 
 Pause_ChkStart:
+	endif
 		btst	#bitStart,(v_jpadpress1).w ; is Start button pressed?
 		beq.s	Pause_Loop	; if not, branch
 
@@ -49,7 +51,8 @@ Pause_DoNothing:
 ; ===========================================================================
 
 Pause_SlowMo:
-		move.b	#1,(f_pause).w
-		st.b	(v_snddriver_ram.f_pausemusic).w	; Unpause the music
+		moveq	#-1,d0
+		move.b	d0,(f_pause).w
+		move.b	d0,(v_snddriver_ram.f_pausemusic).w	; Unpause the music
 		rts
 ; End of function PauseGame

@@ -2397,7 +2397,7 @@ Tit_MainLoop:
 Tit_ChkRegion:
 		tst.w	v_generictimer.w
 		beq.w	GotoDemo
-		andi.b	#btnStart,(v_jpadpress1).w ; check if Start is pressed
+		btst	#bitStart,(v_jpadpress1).w ; check if Start is pressed
 		beq.s	Tit_MainLoop	; if not, branch
 
 	if debugbuild
@@ -2583,7 +2583,7 @@ loc_33B6:
 ; ===========================================================================
 
 loc_33E4:
-		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
+		btst	#bitStart,(v_jpadpress1).w ; is Start button pressed?
 	if debugbuild
 		bne.w	Tit_ChkLevSel	; if yes, branch
 	else
@@ -2649,15 +2649,15 @@ LevSel_UpDown:
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed?
 		beq.s	LevSel_SndTest	; if not, branch
 		move.w	(v_levselitem).w,d0
-		btst	#bitUp,d1	; is up pressed?
-		beq.s	LevSel_Down	; if not, branch
+		cmpi.b	#btnUp,d1	; is up pressed?
+		bne.s	LevSel_Down	; if not, branch
 		subq.w	#1,d0		; move up 1 selection
 		bhs.s	LevSel_Down
 		moveq	#$14,d0		; if selection moves below 0, jump to selection $14
 
 LevSel_Down:
-		btst	#bitDn,d1	; is down pressed?
-		beq.s	LevSel_Refresh	; if not, branch
+		cmpi.b	#btnDn,d1	; is down pressed?
+		bne.s	LevSel_Refresh	; if not, branch
 		addq.w	#1,d0		; move down 1 selection
 		cmpi.w	#$15,d0
 		blo.s	LevSel_Refresh
@@ -2678,13 +2678,13 @@ LevSel_SndTest:
 		andi.b	#btnR+btnL,d1	; is left/right pressed?
 		beq.s	LevSel_NoMove	; if not, branch
 		move.w	(v_levselsound).w,d0
-		btst	#bitL,d1	; is left pressed?
-		beq.s	LevSel_Right	; if not, branch
+		cmpi.b	#btnL,d1	; is left pressed?
+		bne.s	LevSel_Right	; if not, branch
 		subq.w	#1,d0		; subtract 1 from sound test
 
 LevSel_Right:
-		btst	#bitR,d1	; is right pressed?
-		beq.s	LevSel_Refresh2	; if not, branch
+		cmpi.b	#btnR,d1	; is right pressed?
+		bne.s	LevSel_Refresh2	; if not, branch
 		addq.w	#1,d0		; add 1 to sound test
 
 LevSel_Refresh2:
