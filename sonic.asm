@@ -5284,8 +5284,6 @@ Map_Spike:	include	"_maps/Spikes.asm"
 Map_PRock:	include	"_maps/Purple Rock.asm"
 		include	"_incObj/3C Smashable Wall.asm"
 
-		include	"_incObj/sub SmashObject.asm"
-
 ; ===========================================================================
 ; Smashed block fragment speeds
 ;
