@@ -69,7 +69,7 @@ Sign_Spin:	; Routine 4
 		bsr.w	FindFreeObj
 		bne.s	.fail
 		_move.l	#Rings,obID(a1)	; load rings object
-		move.b	#id_Ring_Sparkle,obRoutine(a1) ; jump to ring sparkle subroutine
+		addq.b	#id_Ring_Sparkle,obRoutine(a1) ; jump to ring sparkle subroutine
 		move.b	(a2)+,d0
 		ext.w	d0
 		add.w	obX(a0),d0

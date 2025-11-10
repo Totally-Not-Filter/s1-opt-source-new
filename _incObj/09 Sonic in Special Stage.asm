@@ -286,7 +286,7 @@ Obj09_ExitStage:
 		addi.w	#$40,(v_ssrotate).w
 		cmpi.w	#$1800,(v_ssrotate).w
 		bne.s	loc_1BBF4
-		move.b	#id_Level,(v_gamemode).w
+		move.l	#GM_Level,(v_gamemode).w
 
 loc_1BBF4:
 		cmpi.w	#$3000,(v_ssrotate).w
@@ -309,7 +309,7 @@ loc_1BC12:
 Obj09_Exit2:
 		subq.w	#1,objoff_38(a0)
 		bne.s	loc_1BC40
-		move.b	#id_Level,(v_gamemode).w
+		move.l	#GM_Level,(v_gamemode).w
 
 loc_1BC40:
 		jsr	(Sonic_Animate).l

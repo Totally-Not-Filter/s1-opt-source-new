@@ -150,7 +150,7 @@ Got_NextLevel:	; Routine $A
 		move.w	d0,(v_zone).w	; set level number
 		tst.w	d0
 		bne.s	Got_ChkSS
-		move.b	#id_Sega,(v_gamemode).w
+		move.l	#GM_Sega,(v_gamemode).w
 		jmp	(DisplaySprite).w
 ; ===========================================================================
 
@@ -158,7 +158,7 @@ Got_ChkSS:
 		clr.b	(v_lastlamp).w	; clear lamppost counter
 		tst.b	(f_bigring).w	; has Sonic jumped into a giant ring?
 		beq.s	loc_C6EA	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set game mode to Special Stage (10)
+		move.l	#GM_Special,(v_gamemode).w ; set game mode to Special Stage (10)
 		jmp	(DisplaySprite).w
 ; ===========================================================================
 

@@ -154,13 +154,13 @@ v_eggmanchaos	= v_objspace+object_size*32	; object variable space for the emeral
 v_snddriver_ram:	SMPS_RAM		; sound driver state
 			ds.b	$40		; unused
 
-v_gamemode:		ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
-			ds.b	1		; unused
+v_gamemode:		ds.l	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held
 v_jpadpress1:		ds.b	1		; joypad input - pressed
-			ds.b	6		; unused
+v_pre_level:		ds.b	1
+			ds.b	3		; unused
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
 			ds.b	6		; unused
 v_generictimer:		ds.w	1		; generic timer, decrements to 0 in vblank (word)

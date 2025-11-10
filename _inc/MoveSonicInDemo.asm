@@ -16,12 +16,12 @@ MDemo_On:
 		bpl.s	.dontquit	; if not, branch
 		tst.w	(f_demo).w	; is this an ending sequence demo?
 		bmi.s	.dontquit	; if yes, branch
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		move.l	#GM_Title,(v_gamemode).w ; go to title screen
 
 .dontquit:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.b	#id_Special,(v_gamemode).w ; is this a special stage?
+		cmpi.l	#GM_Special,(v_gamemode).w ; is this a special stage?
 		bne.s	.notspecial	; if not, branch
 		moveq	#6,d0		; use demo #6
 

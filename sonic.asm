@@ -362,37 +362,12 @@ GameInit:
 		move.b	d0,z80_port_2_control+1	; init port 2 (joypad 2)
 		move.b	d0,z80_expansion_control+1	; init port 3 (expansion/extra)
 		startZ80
-		move.b	#id_Sega,v_gamemode.w ; set Game Mode to Sega Screen
+		move.l	#GM_Sega,v_gamemode.w ; set Game Mode to Sega Screen
 
 MainGameLoop:
-		moveq	#$1C,d0
-		and.b	v_gamemode.w,d0 ; load Game Mode
-		movea.l	GameModeArray(pc,d0.w),a0 ; jump to apt location in ROM
+		movea.l	v_gamemode.w,a0 ; load Game Mode
 		jsr	(a0)
 		bra.s	MainGameLoop	; loop indefinitely
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Main game mode array
-; ---------------------------------------------------------------------------
-
-GameModeArray:
-
-ptr_GM_Sega:	dc.l	GM_Sega		; Sega Screen ($00)
-
-ptr_GM_Title:	dc.l	GM_Title	; Title Screen ($04)
-
-ptr_GM_Demo:	dc.l	GM_Level	; Demo Mode ($08)
-
-ptr_GM_Level:	dc.l	GM_Level	; Normal Level ($0C)
-
-ptr_GM_Special:	dc.l	GM_Special	; Special Stage ($10)
-
-ptr_GM_Cont:	dc.l	GM_Continue	; Continue Screen ($14)
-
-ptr_GM_Ending:	dc.l	GM_Ending	; End of game sequence ($18)
-
-ptr_GM_Credits:	dc.l	GM_Credits	; Credits ($1C)
-
 ; ===========================================================================
 
 CheckSumError:
@@ -449,9 +424,9 @@ VBla_Exit:
 
 ; loc_B88:
 VBla_00:
-		cmpi.b	#$80+id_Level,v_gamemode.w
+		tst.b	v_pre_level.w
 		beq.s	.islevel
-		cmpi.b	#id_Level,v_gamemode.w ; is game on a level?
+		cmpi.l	#GM_Level,v_gamemode.w ; is game on a level?
 		bne.s	VBla_Music	; if not, branch
 
 .islevel:
@@ -519,7 +494,7 @@ VBla_04:
 ; ===========================================================================
 
 VBla_10:
-		cmpi.b	#id_Special,v_gamemode.w ; is game on special stage?
+		cmpi.l	#GM_Special,v_gamemode.w ; is game on special stage?
 		beq.w	VBla_0A		; if yes, branch
 
 ; loc_C6E:
@@ -2235,7 +2210,7 @@ Sega_WaitPal:
 
 Sega_WaitEnd:
 		jsr	MegaPCM_StopPlayback
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		move.l	#GM_Title,(v_gamemode).w ; go to title screen
 		rts
 ; ===========================================================================
 
@@ -2415,7 +2390,7 @@ Tit_MainLoop:
 		cmpi.w	#$1C00,(v_player+obX).w	; has Sonic object passed $1C00 on x-axis?
 		blo.s	Tit_ChkRegion	; if not, branch
 
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.l	#GM_Sega,(v_gamemode).w ; go to Sega screen
 		rts
 ; ===========================================================================
 
@@ -2481,13 +2456,13 @@ LevSel_PlaySnd:
 ; ===========================================================================
 
 LevSel_Ending:
-		move.b	#id_Ending,(v_gamemode).w ; set screen mode to $18 (Ending)
+		move.l	#GM_Ending,(v_gamemode).w ; set screen mode to $18 (Ending)
 		move.w	#(id_EndZ<<8),v_zone.w ; set level to 0600 (Ending)
 		rts
 ; ===========================================================================
 
 LevSel_Credits:
-		move.b	#id_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
+		move.l	#GM_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
 		move.b	#bgm_Credits,(v_snddriver_ram.v_soundqueue0).w
 		clr.w	(v_creditsnum).w
 		rts
@@ -2499,7 +2474,7 @@ LevSel_Level_SS:
 		bmi.s	LevelSelect
 		cmpi.w	#id_SS*$100,d0	; check if level is 0700 (Special Stage)
 		bne.s	LevSel_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
+		move.l	#GM_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
 		clr.w	v_zone.w	; clear level
 		move.b	#3,(v_lives).w	; set lives to 3
 		moveq	#0,d0
@@ -2518,7 +2493,7 @@ LevSel_Level:
 	endif
 
 PlayLevel:
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
+		move.l	#GM_Level,(v_gamemode).w ; set screen mode to $0C (level)
 		move.b	#3,(v_lives).w	; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).w	; clear rings
@@ -2603,7 +2578,7 @@ loc_33B6:
 		addq.w	#2,(v_player+obX).w
 		cmpi.w	#$1C00,(v_player+obX).w
 		blo.s	loc_33E4
-		move.b	#id_Sega,(v_gamemode).w
+		move.l	#GM_Sega,(v_gamemode).w
 		rts
 ; ===========================================================================
 
@@ -2629,10 +2604,10 @@ loc_33E4:
 
 loc_3422:
 		move.w	#1,(f_demo).w	; turn demo mode on
-		move.b	#id_Demo,(v_gamemode).w ; set screen mode to 08 (demo)
+		move.l	#GM_Level,(v_gamemode).w ; set screen mode to 08 (demo)
 		cmpi.w	#$600,d0	; is level number 0600 (special stage)?
 		bne.s	Demo_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
+		move.l	#GM_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
 		clr.w	v_zone.w	; clear level number
 		clr.b	(v_lastspecial).w ; clear special stage number
 
@@ -2886,7 +2861,7 @@ MusicList:
 ; ---------------------------------------------------------------------------
 
 GM_Level:
-		bset	#7,(v_gamemode).w ; add $80 to screen mode (for pre level sequence)
+		sf.b	v_pre_level.w
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,(v_snddriver_ram.v_soundqueue0).w
@@ -3057,9 +3032,10 @@ Level_SkipClr:
 		move.w	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w ; update score counter
-		move.b	#1,(f_ringcount).w ; update rings counter
-		move.b	#1,(f_timecount).w ; update time counter
+		moveq	#-1,d0
+		move.b	d0,(f_scorecount).w ; update score counter
+		move.b	d0,(f_ringcount).w ; update rings counter
+		move.b	d0,(f_timecount).w ; update time counter
 		clr.w	(v_btnpushtime1).w
 		lea	DemoDataPtr(pc),a1 ; load demo data
 		moveq	#0,d0
@@ -3111,9 +3087,10 @@ Level_DelayLoop:
 		tst.w	(f_demo).w	; is an ending sequence demo running?
 		bmi.s	Level_ClrCardArt ; if yes, branch
 		addq.b	#2,(v_ttlcardname+obRoutine).w ; make title card move
-		addq.b	#4,(v_ttlcardzone+obRoutine).w
-		addq.b	#4,(v_ttlcardact+obRoutine).w
-		addq.b	#4,(v_ttlcardoval+obRoutine).w
+		moveq	#4,d0
+		move.b	d0,(v_ttlcardzone+obRoutine).w
+		move.b	d0,(v_ttlcardact+obRoutine).w
+		move.b	d0,(v_ttlcardoval+obRoutine).w
 		bra.s	Level_StartGame
 ; ===========================================================================
 
@@ -3126,7 +3103,7 @@ Level_ClrCardArt:
 		bsr.w	AddPLC	; load animal gfx (level no. + $15)
 
 Level_StartGame:
-		bclr	#7,(v_gamemode).w ; subtract $80 from mode to end pre-level stuff
+		clr.b	v_pre_level.w
 
 ; ---------------------------------------------------------------------------
 ; Main level loop (when all title card and loading sequences are finished)
@@ -3164,9 +3141,9 @@ Level_SkipScroll:
 		bsr.w	SynchroAnimate
 		bsr.w	SignpostArtLoad
 
-		cmpi.b	#id_Demo,(v_gamemode).w
-		beq.s	Level_ChkDemo	; if mode is 8 (demo), branch
-		cmpi.b	#id_Level,(v_gamemode).w
+		tst.w	(f_demo).w
+		bne.s	Level_ChkDemo	; if mode is 8 (demo), branch
+		cmpi.l	#GM_Level,(v_gamemode).w
 		beq.s	Level_MainLoop	; if mode is $C (level), branch
 		rts
 ; ===========================================================================
@@ -3176,19 +3153,19 @@ Level_ChkDemo:
 		bne.s	Level_EndDemo	; if yes, branch
 		tst.w	v_generictimer.w ; is there time left on the demo?
 		beq.s	Level_EndDemo	; if not, branch
-		cmpi.b	#id_Demo,(v_gamemode).w
-		beq.w	Level_MainLoop	; if mode is 8 (demo), branch
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		tst.w	(f_demo).w
+		bne.w	Level_MainLoop	; if mode is 8 (demo), branch
+		move.l	#GM_Sega,(v_gamemode).w ; go to Sega screen
 		rts
 ; ===========================================================================
 
 Level_EndDemo:
-		cmpi.b	#id_Demo,(v_gamemode).w
+		tst.w	(f_demo).w
 		bne.s	Level_FadeDemo	; if mode is 8 (demo), branch
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.l	#GM_Sega,(v_gamemode).w ; go to Sega screen
 		tst.w	(f_demo).w	; is demo mode on & not ending sequence?
 		bpl.s	Level_FadeDemo	; if yes, branch
-		move.b	#id_Credits,(v_gamemode).w ; go to credits
+		move.l	#GM_Credits,(v_gamemode).w ; go to credits
 
 Level_FadeDemo:
 		move.w	#60,v_generictimer.w
@@ -3458,12 +3435,12 @@ SS_MainLoop:
 		beq.w	SS_ToSegaScreen	; if not, branch
 
 SS_ChkEnd:
-		cmpi.b	#id_Special,(v_gamemode).w ; is game mode $10 (special stage)?
+		cmpi.l	#GM_Special,(v_gamemode).w ; is game mode $10 (special stage)?
 		beq.s	SS_MainLoop	; if yes, branch
 
 		tst.w	(f_demo).w	; is demo mode on?
 		bne.w	SS_ToLevel
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
+		move.l	#GM_Level,(v_gamemode).w ; set screen mode to $0C (level)
 		cmpi.w	#(id_SBZ<<8)+3,v_zone.w ; is level number higher than FZ?
 		blo.s	SS_Finish	; if not, branch
 		clr.w	v_zone.w	; set to GHZ1
@@ -3536,11 +3513,11 @@ SS_NormalExit:
 ; ===========================================================================
 
 SS_ToSegaScreen:
-		move.b	#id_Sega,(v_gamemode).w ; goto Sega screen
+		move.l	#GM_Sega,(v_gamemode).w ; goto Sega screen
 		rts
 
 		if Revision<>0
-SS_ToLevel:	cmpi.b	#id_Level,(v_gamemode).w
+SS_ToLevel:	cmpi.l	#GM_Level,(v_gamemode).w
 		beq.s	SS_ToSegaScreen
 		rts
 		endif
@@ -3967,12 +3944,12 @@ loc_4DF2:
 		bhs.s	Cont_MainLoop
 		tst.w	v_generictimer.w
 		bne.s	Cont_MainLoop
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.l	#GM_Sega,(v_gamemode).w ; go to Sega screen
 		rts
 ; ===========================================================================
 
 Cont_GotoLevel:
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
+		move.l	#GM_Level,(v_gamemode).w ; set screen mode to $0C (level)
 		move.b	#3,(v_lives).w	; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).w	; clear rings
@@ -4097,10 +4074,10 @@ End_MainLoop:
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
-		cmpi.b	#id_Ending,(v_gamemode).w ; is game mode $18 (ending)?
+		cmpi.l	#GM_Ending,(v_gamemode).w ; is game mode $18 (ending)?
 		beq.s	End_ChkEmerald	; if yes, branch
 
-		move.b	#id_Credits,(v_gamemode).w ; goto credits
+		move.l	#GM_Credits,(v_gamemode).w ; goto credits
 		move.b	#bgm_Credits,(v_snddriver_ram.v_soundqueue0).w
 		clr.w	(v_creditsnum).w ; set credits index number to 0
 		rts
@@ -4286,7 +4263,7 @@ EndingDemoLoad:
 		cmpi.w	#9,(v_creditsnum).w ; have credits finished?
 		bhs.s	EndDemo_Exit	; if yes, branch
 		move.w	#$8001,(f_demo).w ; set demo+ending mode
-		move.b	#id_Demo,(v_gamemode).w ; set game mode to 8 (demo)
+		move.l	#GM_Level,(v_gamemode).w ; set game mode to 8 (demo)
 		move.b	#3,(v_lives).w	; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).w	; clear rings
@@ -4376,11 +4353,11 @@ TryAg_MainLoop:
 		bne.s	TryAg_Exit	; if yes, branch
 		tst.w	v_generictimer.w ; has 30 seconds elapsed?
 		beq.s	TryAg_Exit	; if yes, branch
-		cmpi.b	#id_Credits,(v_gamemode).w
+		cmpi.l	#GM_Credits,(v_gamemode).w
 		beq.s	TryAg_MainLoop
 
 TryAg_Exit:
-		move.b	#id_Sega,(v_gamemode).w ; goto Sega screen
+		move.l	#GM_Sega,(v_gamemode).w ; goto Sega screen
 		rts
 
 ; ===========================================================================
@@ -6667,7 +6644,7 @@ Map_HUD:	include	"_maps/HUD.asm"
 
 
 AddPoints:
-		move.b	#1,(f_scorecount).w ; set score counter to update
+		st.b	(f_scorecount).w ; set score counter to update
 		lea	(v_score).w,a3
 		add.l	d0,(a3)
 		move.l	#999999,d1

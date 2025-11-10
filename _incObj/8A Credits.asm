@@ -23,7 +23,7 @@ Cred_Main:	; Routine 0
 		move.b	#0,obRender(a0)
 		move.w	#0*$80,obPriority(a0)
 
-		cmpi.b	#id_Title,(v_gamemode).w ; is the mode #4 (title screen)?
+		cmpi.l	#GM_Title,(v_gamemode).w ; is the mode #4 (title screen)?
 		bne.s	Cred_Display	; if not, branch
 
 		move.w	#make_art_tile(ArtTile_Sonic_Team_Font,0,0),obGfx(a0)

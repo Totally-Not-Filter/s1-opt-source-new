@@ -23,7 +23,7 @@ Debug_Main:	; Routine 0
 		andi.w	#$3FF,(v_bgscreenposy).w
 		move.b	#0,obFrame(a0)
 		move.b	#id_Walk,obAnim(a0)
-		cmpi.b	#id_Special,(v_gamemode).w ; is game mode $10 (special stage)?
+		cmpi.l	#GM_Special,(v_gamemode).w ; is game mode $10 (special stage)?
 		bne.s	.islevel	; if not, branch
 
 		move.w	#0,(v_ssrotate).w ; stop special stage rotating
@@ -52,7 +52,7 @@ Debug_Main:	; Routine 0
 
 Debug_Action:	; Routine 2
 		moveq	#6,d0
-		cmpi.b	#id_Special,(v_gamemode).w
+		cmpi.l	#GM_Special,(v_gamemode).w
 		beq.s	.isntlevel
 
 		moveq	#0,d0
@@ -197,7 +197,7 @@ Debug_ChgItem:
 		move.w	d0,obY+2(a0)
 		move.w	(v_limittopdb).w,(v_limittop2).w ; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
-		cmpi.b	#id_Special,(v_gamemode).w ; are you in the special stage?
+		cmpi.l	#GM_Special,(v_gamemode).w ; are you in the special stage?
 		bne.s	.stayindebug	; if not, branch
 
 		clr.w	(v_ssangle).w
