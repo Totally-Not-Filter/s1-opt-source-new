@@ -53,4 +53,7 @@ Flap_OpenClose:	; Routine 2
 		bsr.w	SolidObject	; make the door solid
 
 .display:
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w

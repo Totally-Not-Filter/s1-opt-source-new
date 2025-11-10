@@ -39,7 +39,10 @@ Ledge_Touch:	; Routine 2
 		moveq	#$30,d1
 		lea	Ledge_SlopeData(pc),a2
 		bsr.w	SlopeObject
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 Ledge_Collapse:	; Routine 4
@@ -58,7 +61,10 @@ Ledge_WalkOff:	; Routine $A
 		lea	Ledge_SlopeData(pc),a2
 		move.w	obX(a0),d2
 		bsr.w	SlopeObject2
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; End of function Ledge_WalkOff
 
 ; ===========================================================================

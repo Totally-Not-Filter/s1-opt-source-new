@@ -31,7 +31,7 @@ Pole_Main:	; Routine 0
 
 Pole_Action:	; Routine 2
 		tst.b	pole_grabbed(a0) ; has pole already been grabbed?
-		beq.s	.grab		; if not, branch
+		beq.w	.grab		; if not, branch
 		tst.w	pole_time(a0)
 		beq.s	.moveup
 		subq.w	#1,pole_time(a0) ; decrement time until break
@@ -63,7 +63,7 @@ Pole_Action:	; Routine 2
 .letgo:
 		move.b	(v_jpadpress2).w,d0
 		andi.w	#btnABC,d0	; is A/B/C pressed?
-		beq.s	Pole_Display	; if not, branch
+		beq.w	Pole_Display	; if not, branch
 
 .release:
 		clr.b	obColType(a0)
@@ -71,7 +71,10 @@ Pole_Action:	; Routine 2
 		clr.b	(f_playerctrl).w
 		clr.b	(f_wtunnelallow).w
 		clr.b	pole_grabbed(a0)
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w
 ; ===========================================================================
 
 .grab:
@@ -97,4 +100,7 @@ Pole_Action:	; Routine 2
 		move.b	#1,pole_grabbed(a0) ; begin countdown to breakage
 
 Pole_Display:	; Routine 4
-		jmp	(RememberState).w
+		out_of_range.s	.delete
+		jmp	(DisplaySprite).w
+.delete:
+		jmp	(DeleteObject_Respawn).w

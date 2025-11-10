@@ -1582,8 +1582,8 @@ Sonic_Animate:
 		adda.w	(a1,d0.w),a1	; jump to appropriate animation script
 		move.b	(a1),d0
 		bmi.s	.walkrunroll	; if animation is walk/run/roll/jump, branch
-		move.b	obStatus(a0),d1
-		andi.b	#1,d1
+		moveq	#1,d1
+		and.b	obStatus(a0),d1
 		andi.b	#$FC,obRender(a0)
 		or.b	d1,obRender(a0)
 		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
@@ -1718,8 +1718,8 @@ Sonic_Animate:
 .belowmax2:
 		lsr.w	#8,d2
 		move.b	d2,obTimeFrame(a0) ; modify frame duration
-		move.b	obStatus(a0),d1
-		andi.b	#1,d1
+		moveq	#1,d1
+		and.b	obStatus(a0),d1
 		andi.b	#$FC,obRender(a0)
 		or.b	d1,obRender(a0)
 		bra.w	.loadframe
@@ -1740,8 +1740,8 @@ Sonic_Animate:
 		lsr.w	#6,d2
 		move.b	d2,obTimeFrame(a0) ; modify frame duration
 		lea	SonAni_Push(pc),a1
-		move.b	obStatus(a0),d1
-		andi.b	#1,d1
+		moveq	#1,d1
+		and.b	obStatus(a0),d1
 		andi.b	#$FC,obRender(a0)
 		or.b	d1,obRender(a0)
 		bra.w	.loadframe

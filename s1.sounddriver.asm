@@ -16,11 +16,11 @@ SMPS_SPECIAL_SFX_TRACK_COUNT = (SMPS_RAM.v_spcsfx_track_ram_end-SMPS_RAM.v_spcsf
 SMPS_SPECIAL_SFX_FM_TRACK_COUNT = (SMPS_RAM.v_spcsfx_fm_tracks_end-SMPS_RAM.v_spcsfx_fm_tracks)/SMPS_Track.len
 SMPS_SPECIAL_SFX_PSG_TRACK_COUNT = (SMPS_RAM.v_spcsfx_psg_tracks_end-SMPS_RAM.v_spcsfx_psg_tracks)/SMPS_Track.len
 ; ---------------------------------------------------------------------------
-; Macros
-; turn a sample rate into a djnz loop counter
-pcmLoopCounterBase function sampleRate,baseCycles, 1+(Z80_Clock/(sampleRate)-(baseCycles)+(13/2))/13
-pcmLoopCounter function sampleRate, pcmLoopCounterBase(sampleRate,90) ; 90 is the number of cycles zPlaySEGAPCMLoop takes to deliver one sample.
-dpcmLoopCounter function sampleRate, pcmLoopCounterBase(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes to deliver two samples.
+; Equates
+
+; 0: Use a lookup table for every octave. Good for fast processing.
+; 1: Use a lookup table for one octave, manually calculate the remaining 6. Good for saving space.
+FMFreqCalc = 0
 ; ---------------------------------------------------------------------------
 ; SMPS2ASM - A collection of macros that make SMPS's bytecode human-readable.
 ; ---------------------------------------------------------------------------
@@ -343,9 +343,23 @@ FMSetFreq:
 		subi.b	#$80,d5				; Make it a zero-based index
 		beq.s	TrackSetRest
 		add.b	SMPS_Track.Transpose(a5),d5	; Add track transposition
-		andi.w	#$7F,d5				; Clear high byte and sign bit
+	if FMFreqCalc
+		andi.w	#$FF,d5
+		divu.w	#12,d5
+		swap	d5
+		add.w	d5,d5
+		move.w	FMFrequencies(pc,d5.w),d6
+		swap	d5
+		andi.w	#7,d5
+		moveq	#11,d0
+		lsl.w	d0,d5
+		or.w	d5,d6
+		move.w	d6,SMPS_Track.Freq(a5)		; Store new frequency
+	else
+		andi.w	#$FF,d5				; Clear high byte and sign bit
 		add.w	d5,d5
 		move.w	FMFrequencies(pc,d5.w),SMPS_Track.Freq(a5)		; Store new frequency
+	endif
 		rts
 ; End of function FMSetFreq
 
@@ -387,6 +401,7 @@ MakeFMFrequenciesOctave macro octave
 ; word_72790: FM_Notes:
 FMFrequencies:
 		MakeFMFrequenciesOctave 0
+	if ~~FMFreqCalc
 		MakeFMFrequenciesOctave 1
 		MakeFMFrequenciesOctave 2
 		MakeFMFrequenciesOctave 3
@@ -394,6 +409,7 @@ FMFrequencies:
 		MakeFMFrequenciesOctave 5
 		MakeFMFrequenciesOctave 6
 		MakeFMFrequenciesOctave 7
+	endif
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 

@@ -13,11 +13,11 @@ LevelSizeLoad:
 		lsr.w	#3,d0
 		lea	LevelSizeArray(pc,d0.w),a0 ; load level boundaries
 		move.l	(a0)+,d0
-		move.l	d0,(v_limitleft2).w
 		move.l	d0,(v_limitleft1).w
+		move.l	d0,(v_limitleft2).w
 		move.l	(a0)+,d0
-		move.l	d0,(v_limittop2).w
 		move.l	d0,(v_limittop1).w
+		move.l	d0,(v_limittop2).w
 		move.w	(v_limitleft2).w,d0
 		addi.w	#$240,d0
 		move.w	d0,(v_limitleft3).w
