@@ -9,7 +9,7 @@ Yad_ChkWall:
 		move.b	obActWid(a0),d3
 		tst.w	obVelX(a0)
 		bmi.s	loc_F82C
-		bsr.w	ObjHitWallRight
+		jsr	(ObjHitWallRight).l
 		tst.w	d1
 		bpl.s	loc_F836
 
@@ -20,7 +20,7 @@ loc_F828:
 
 loc_F82C:
 		not.w	d3
-		bsr.w	ObjHitWallLeft
+		jsr	(ObjHitWallLeft).l
 		tst.w	d1
 		bmi.s	loc_F828
 
@@ -56,7 +56,7 @@ Yad_Main:	; Routine 0
 		move.b	#8,obWidth(a0)
 		move.b	#$CC,obColType(a0)
 		jsr	(ObjectFall).w
-		bsr.w	ObjFloorDist
+		jsr	(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_F89E
 		add.w	d1,obY(a0)	; match object's position with the floor
@@ -97,7 +97,7 @@ locret_F8E2:
 
 Yad_FixToFloor:
 		jsr	(SpeedToPos).w
-		bsr.w	ObjFloorDist
+		jsr	(ObjFloorDist).l
 		cmpi.w	#-8,d1
 		blt.s	Yad_Pause
 		cmpi.w	#$C,d1

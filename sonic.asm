@@ -5445,6 +5445,7 @@ Map_WFall:	include	"_maps/Waterfalls.asm"
 ; ===========================================================================
 
 		include	"_incObj/01 Sonic.asm"
+SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
 		include	"_incObj/0A Drowning Countdown.asm"
 
 ; ---------------------------------------------------------------------------
@@ -5499,6 +5500,13 @@ Map_Splash:	include	"_maps/Water Splash.asm"
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
 		include	"_incObj/sub FindWall.asm"
+
+AngleMap:	binclude	"collide/Angle Map.bin"
+		even
+CollArray1:	binclude	"collide/Collision Array (Normal).bin"
+		even
+CollArray2:	binclude	"collide/Collision Array (Rotated).bin"
+		even
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -5918,6 +5926,8 @@ locret_15098:
 
 ; ===========================================================================
 
+		include	"_incObj/sub ReactToItem.asm"
+
 		include	"_incObj/66 Rotating Junction.asm"
 Map_Jun:	include	"_maps/Rotating Junction.asm"
 		include	"_incObj/67 Running Disc.asm"
@@ -6058,8 +6068,6 @@ Map_Plasma:	include	"_maps/Plasma Balls.asm"
 		include	"_incObj/3E Prison Capsule.asm"
 		include	"_anim/Prison Capsule.asm"
 Map_Pri:	include	"_maps/Prison Capsule.asm"
-
-		include	"_incObj/sub ReactToItem.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to show the special stage layout
@@ -6754,8 +6762,6 @@ KosPM_JapNames:	binclude	"artkospm/Hidden Japanese Credits.kospm"
 		even
 
 Map_Sonic:	include	"_maps/Sonic.asm"
-SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
-
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics - Sonic
 ; ---------------------------------------------------------------------------
@@ -7112,12 +7118,6 @@ KosPM_EndStH:	binclude	"artkospm/Ending - StH Logo.kospm"
 ; ---------------------------------------------------------------------------
 ; Collision data
 ; ---------------------------------------------------------------------------
-AngleMap:	binclude	"collide/Angle Map.bin"
-		even
-CollArray1:	binclude	"collide/Collision Array (Normal).bin"
-		even
-CollArray2:	binclude	"collide/Collision Array (Rotated).bin"
-		even
 Col_GHZ_1:	binclude	"collide/GHZ1.bin"	; GHZ index 1
 		even
 Col_GHZ_2:	binclude	"collide/GHZ2.bin"	; GHZ index 2

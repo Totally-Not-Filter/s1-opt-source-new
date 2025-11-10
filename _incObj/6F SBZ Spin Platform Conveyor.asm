@@ -141,7 +141,7 @@ loc_163D8:	; Routine 2
 		moveq	#7,d2
 		moveq	#8,d3
 		move.w	(sp)+,d4
-		bra.w	SolidObject
+		jmp	(SolidObject).l
 ; ===========================================================================
 
 loc_16404:

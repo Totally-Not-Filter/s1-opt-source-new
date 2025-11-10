@@ -69,7 +69,7 @@ Spin_Trapdoor:	; Routine 2
 		moveq	#$C,d2
 		moveq	#$D,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject
+		jsr	(SolidObject).l
 		jmp	(RememberState).w
 ; ===========================================================================
 
@@ -109,7 +109,7 @@ Spin_Spinner:	; Routine 4
 		moveq	#7,d2
 		moveq	#8,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject
+		jsr	(SolidObject).l
 		jmp	(RememberState).w
 ; ===========================================================================
 

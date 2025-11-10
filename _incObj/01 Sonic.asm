@@ -85,7 +85,7 @@ Sonic_Control:	; Routine 2
 		bsr.w	Sonic_Animate
 		tst.b	(f_playerctrl).w
 		bmi.s	.ignoreobjcoll
-		jsr	(ReactToItem).l
+		bsr.w	ReactToItem
 
 .ignoreobjcoll:
 		bsr.w	Sonic_Loops
@@ -823,15 +823,13 @@ Sonic_LevelBound:
 ; Boundary_Bottom
 .bottom:
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2 ?
-		bne.s	.killsonic	; if not, kill Sonic
+		bne.w	KillSonic	; if not, kill Sonic
 		cmpi.w	#$2000,(v_player+obX).w
-		blo.s	.killsonic
+		blo.w	KillSonic
 		clr.b	(v_lastlamp).w	; clear lamppost counter
 		move.w	#1,(f_restart).w ; restart the level
 		move.w	#(id_LZ<<8)+3,(v_zone).w ; set level to SBZ3 (LZ4)
 		rts
-.killsonic:
-		jmp	(KillSonic).l
 ; ===========================================================================
 
 ; Boundary_Sides
@@ -1573,8 +1571,9 @@ Sonic_Animate:
 		cmp.b	obPrevAni(a0),d0 ; has animation changed?
 		beq.s	.do		; if not, branch
 		move.b	d0,obPrevAni(a0)
-		move.b	#0,obAniFrame(a0) ; reset animation
-		move.b	#0,obTimeFrame(a0) ; reset frame duration
+		moveq	#0,d1
+		move.b	d1,obAniFrame(a0) ; reset animation
+		move.b	d1,obTimeFrame(a0) ; reset frame duration
 
 ; SAnim_Do:
 .do:
@@ -1764,7 +1763,7 @@ Sonic_LoadGfx:
 		beq.s	.nochange	; if not, branch
 
 		move.b	d0,(v_sonframenum).w
-		lea	(SonicDynPLC).l,a2 ; load PLC script
+		lea	SonicDynPLC(pc),a2 ; load PLC script
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d5	; read "number of entries" value

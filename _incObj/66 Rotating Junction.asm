@@ -20,13 +20,13 @@ jun_switch = objoff_38		; which switch will reverse the disc
 
 Jun_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.w	#1,d1
+		moveq	#1,d1
 		movea.l	a0,a1
 		bra.s	.makeitem
 ; ===========================================================================
 
 .repeat:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).l
 		bne.s	.fail
 		_move.l	#Junction,obID(a1)
 		addq.b	#4,obRoutine(a1) ; goto Jun_Display next
@@ -58,7 +58,7 @@ Jun_Action:	; Routine 2
 		moveq	#$30,d2
 		moveq	#$31,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject
+		jsr	(SolidObject).l
 		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
 		beq.w	Jun_Display	; if not, branch
 

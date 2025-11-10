@@ -84,7 +84,7 @@ Newt_Action:	; Routine 2
 
 .loc_DE42:
 		jsr	(ObjectFall).w
-		bsr.w	ObjFloorDist
+		jsr	(ObjFloorDist).l
 		tst.w	d1		; has newtron hit the floor?
 		bpl.s	.keepfalling	; if not, branch
 
@@ -109,7 +109,7 @@ Newt_Action:	; Routine 2
 
 .matchfloor:
 		jsr	(SpeedToPos).w
-		bsr.w	ObjFloorDist
+		jsr	(ObjFloorDist).l
 		cmpi.w	#-8,d1
 		blt.s	.nextroutine
 		cmpi.w	#$C,d1
