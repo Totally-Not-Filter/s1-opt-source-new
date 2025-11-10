@@ -663,38 +663,9 @@ HBlank:
 		move.w	#$8A00+223,4(a1) ; reset HBlank register
 		lea	v_palette_water.w,a0 ; get palette from RAM
 		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
+	rept 32
 		move.l	(a0)+,(a1)	; move palette to CRAM
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
+	endr
 		movem.l	(sp)+,a0-a1
 		tst.b	f_doupdatesinhblank.w
 		bne.s	loc_119E
@@ -3062,8 +3033,8 @@ Level_ChkWater:
 		move.w	#$120,(v_watersurface2+obX).w
 
 Level_LoadObj:
-		jsr	(ObjPosLoad).l
-		jsr	(RingsManager).l
+		bsr.w	ObjPosLoad
+		bsr.w	RingsManager
 		jsr	(ExecuteObjects).w
 		jsr	(BuildSprites).w
 		moveq	#0,d0
@@ -3183,8 +3154,8 @@ Level_DoScroll:
 
 Level_SkipScroll:
 		jsr	(BuildSprites).w
-		jsr	(ObjPosLoad).l
-		jsr	(RingsManager).l
+		bsr.w	ObjPosLoad
+		bsr.w	RingsManager
 		jsr	(AnimateLevelGfx).l
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
@@ -3230,8 +3201,8 @@ Level_FDLoop:
 		bsr.w	MoveSonicInDemo
 		jsr	(ExecuteObjects).w
 		jsr	(BuildSprites).w
-		jsr	(ObjPosLoad).l
-		jsr	(RingsManager).l
+		bsr.w	ObjPosLoad
+		bsr.w	RingsManager
 		jsr	(AnimateLevelGfx).l
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_3BC8
@@ -4078,7 +4049,7 @@ End_LoadSonic:
 		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
 		move.w	#-$800,(v_player+obInertia).w ; set Sonic's speed
 		move.l	#HUD,(v_hud).w ; load HUD object
-		jsr	(ObjPosLoad).l
+		bsr.w	ObjPosLoad
 		jsr	(ExecuteObjects).w
 		jsr	(BuildSprites).w
 		moveq	#0,d0
@@ -4119,7 +4090,7 @@ End_MainLoop:
 		jsr	(ExecuteObjects).w
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).w
-		jsr	(ObjPosLoad).l
+		bsr.w	ObjPosLoad
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
@@ -4149,7 +4120,7 @@ End_AllEmlds:
 		jsr	(ExecuteObjects).w
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).w
-		jsr	(ObjPosLoad).l
+		bsr.w	ObjPosLoad
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
 		subq.w	#1,(v_palchgspeed).w
@@ -4501,6 +4472,9 @@ LevelLayoutLoad:
 	endm
 		rts
 ; End of function LevelLayoutLoad2
+
+		include	"_inc/Rings Manager.asm"
+		include	"_inc/Object Manager.asm"
 
 		include	"_inc/DynamicLevelEvents.asm"
 
@@ -5363,8 +5337,6 @@ Obj_Index:
 		include	"_inc/Object Pointers.asm"
 
 		include	"_incObj/sub ChkObjectVisible.asm"
-		include	"_inc/Rings Manager.asm"
-		include	"_inc/Object Manager.asm"
 
 		include	"_incObj/sub FindFreeObj.asm"
 		include	"_incObj/41 Springs.asm"

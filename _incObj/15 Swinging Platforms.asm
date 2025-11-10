@@ -301,7 +301,7 @@ loc_1000C:
 	sub.w	(Camera_X_pos_coarse).w,d0
 	cmpi.w	#$280,d0
 	bhi.s	+
-	bra.w	DisplaySprite
+	jmp	(DisplaySprite).w
 ; ===========================================================================
 +
 	movea.l	objoff_30(a0),a1
@@ -397,7 +397,7 @@ Obj15_State6:
 	move.w	x_pos(a0),-(sp)
 	btst	#1,status(a0)
 	beq.s	+
-	bsr.w	SpeedToPos
+	jsr	(SpeedToPos).w
 	addi.w	#$18,y_vel(a0)
 	cmpi.w	#$720,y_pos(a0)
 	blo.s	++
@@ -430,7 +430,7 @@ Obj15_State6:
 ; loc_10166:
 Obj15_State7:
 	move.w	x_pos(a0),-(sp)
-	bsr.w	SpeedToPos
+	jsr	(SpeedToPos).w
 	btst	#1,status(a0)
 	beq.s	+
 	addi.w	#$18,y_vel(a0)
