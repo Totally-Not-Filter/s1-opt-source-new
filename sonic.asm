@@ -850,6 +850,8 @@ Add_SpriteToCollisionResponseList:
 
 		include	"_incObj/sub AnimateSprite.asm"
 		include	"_inc/Render Rings.asm"
+		include	"_inc/Render HUD.asm"
+Map_HUD:	include	"_maps/HUD.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	convert	mappings (etc) to proper Megadrive sprites
@@ -864,9 +866,9 @@ BuildSprites:
 		lea	(v_spritetablebuffer).w,a6 ; set address for sprite table
 		lea	(v_screenposx).w,a3
 		lea	(v_spritequeue).w,a5
-;		tst.b	(f_hud).w
-;		beq.s	BuildPriorityLoop
-;		bsr.w	BuildHUD
+		tst.b	(f_hud).w
+		beq.s	BuildPriorityLoop
+		bsr.w	BuildHUD
 		bsr.w	BuildRings
 
 BuildPriorityLoop:
@@ -2989,7 +2991,7 @@ Level_SkipTtlCard:
 		move.l	#SonicPlayer,(v_player).w ; load Sonic object
 		tst.w	(f_demo).w
 		bmi.s	Level_ChkDebug
-		move.l	#HUD,(v_hud).w ; load HUD object
+		st.b	(f_hud).w ; load HUD object
 
 Level_ChkDebug:
 	if debugbuild
@@ -4028,7 +4030,7 @@ End_LoadSonic:
 		move.b	#1,(f_lockctrl).w ; lock controls
 		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
 		move.w	#-$800,(v_player+obInertia).w ; set Sonic's speed
-		move.l	#HUD,(v_hud).w ; load HUD object
+		st.b	(f_hud).w ; load HUD object
 		bsr.w	ObjPosLoad
 		jsr	(ExecuteObjects).w
 		jsr	(BuildSprites).w
@@ -6639,9 +6641,6 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 		include	"_incObj/09 Sonic in Special Stage.asm"
 
 		include	"_incObj/10.asm"
-
-		include	"_incObj/21 HUD.asm"
-Map_HUD:	include	"_maps/HUD.asm"
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine

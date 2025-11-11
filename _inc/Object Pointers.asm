@@ -34,7 +34,7 @@ ptr_MagicSwitch:	dc.l NullObject
 ptr_BallHog:		dc.l BallHog
 ptr_Crabmeat:		dc.l Crabmeat
 ptr_Cannonball:		dc.l Cannonball		; $20
-ptr_HUD:		dc.l HUD
+ptr_HUD:		dc.l NullObject
 ptr_BuzzBomber:		dc.l BuzzBomber
 ptr_Missile:		dc.l Missile
 ptr_MissileDissolve:	dc.l NullObject
