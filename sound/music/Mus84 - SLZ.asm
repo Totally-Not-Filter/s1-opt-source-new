@@ -44,7 +44,6 @@ Mus84_SLZ_Call0A:
 ; FM2 Data
 Mus84_SLZ_FM2:
 	smpsSetvoice        $01
-	smpsNop             $01
 	dc.b	nRst, $30
 
 Mus84_SLZ_Jump04:
@@ -62,7 +61,6 @@ Mus84_SLZ_Jump04:
 	smpsCall            Mus84_SLZ_Call08
 	dc.b	nE4, $02, nRst, $01, nF4, $02, nRst, $01, nG4, $06, nRst, nG3
 	dc.b	$24
-	smpsNop             $01
 	smpsJump            Mus84_SLZ_Jump04
 
 Mus84_SLZ_Call07:
@@ -272,13 +270,6 @@ Mus84_SLZ_Call09:
 	dc.b	nEb4
 	smpsAlterVol        $07
 	smpsReturn
-
-; Unused dead data
-Mus84_SLZ_Jump07:
-	smpsJump            Mus84_SLZ_Jump07
-
-Mus84_SLZ_Jump08:
-	smpsJump            Mus84_SLZ_Jump08
 
 ; PSG3 Data
 Mus84_SLZ_PSG3:

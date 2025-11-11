@@ -30,12 +30,10 @@ Mus8E_Sonic_Got_Through_PSG1:
 Mus8E_Sonic_Got_Through_FM2:
 	smpsSetvoice        $01
 	smpsNoteFill        $0B
-	smpsNop             $01
 	dc.b	nG5, $03, nG5, nG4, $06, nG4, nG5, $03, nG5, nG4, $06, nG4
 	dc.b	nG5, $03, nG5, nRst, $06, nRst, $0C, nG4, $09
 	smpsNoteFill        $00
 	dc.b	nA4, $33
-	smpsNop             $01
 	smpsStop
 
 ; FM3 Data
@@ -153,22 +151,3 @@ Mus8E_Sonic_Got_Through_Voices:
 	smpsVcDecayLevel    $01, $01, $01, $01
 	smpsVcReleaseRate   $0F, $0F, $0F, $0F
 	smpsVcTotalLevel    $1B, $00, $00, $1B
-
-; Unused voice
-;	Voice $04
-;	$3D
-;	$01, $02, $02, $02, 	$10, $50, $50, $50, 	$07, $08, $08, $08
-;	$01, $00, $00, $00, 	$2F, $1F, $1F, $1F, 	$1C, $82, $82, $82
-	smpsVcAlgorithm     $05
-	smpsVcFeedback      $07
-	smpsVcUnusedBits    $00
-	smpsVcDetune        $00, $00, $00, $00
-	smpsVcCoarseFreq    $02, $02, $02, $01
-	smpsVcRateScale     $01, $01, $01, $00
-	smpsVcAttackRate    $10, $10, $10, $10
-	smpsVcAmpMod        $00, $00, $00, $00
-	smpsVcDecayRate1    $08, $08, $08, $07
-	smpsVcDecayRate2    $00, $00, $00, $01
-	smpsVcDecayLevel    $01, $01, $01, $02
-	smpsVcReleaseRate   $0F, $0F, $0F, $0F
-	smpsVcTotalLevel    $82, $82, $82, $1C

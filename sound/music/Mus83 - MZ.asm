@@ -106,7 +106,6 @@ Mus83_MZ_Call01:
 Mus83_MZ_FM2:
 	smpsSetvoice        $01
 	dc.b	nRst, $06, nE4, $03, nE4
-	smpsNop             $01
 	dc.b	nE4, $06, nRst, nE3, $24
 
 Mus83_MZ_Jump01:
@@ -133,7 +132,6 @@ Mus83_MZ_Loop01:
 	dc.b	nA3, $12, nA3, $06, nG3, $12, nG3, $06, nF3, $12, nF3, $06
 	dc.b	nG3, $12, nG3, $06
 	smpsLoop            $01, $02, Mus83_MZ_Loop01
-	smpsNop             $01
 	smpsJump            Mus83_MZ_Jump01
 
 Mus83_MZ_Call00:
@@ -180,21 +178,7 @@ Mus83_MZ_PSG2:
 Mus83_MZ_PSG3:
 	smpsPSGform         $E7
 	smpsPSGAlterVol     $FF
-    if FixMusicAndSFXDataBugs
 	dc.b	nRst, $06, nE4, $03, $03, $06, nRst, nE3, $24
-    else
-	; These first three notes are too high when combined with this track's
-	; transposition value, causing them to overflow the PSG frequency table
-	; and play invalid notes. In the Sonic 1 prototype, this problem was
-	; even worse as there were smpsChangeTransposition commands around the
-	; following line that raised the notes yet another octave higher,
-	; causing the fourth note to break too.
-	; Since the commands are gone now, we can assume that this was the
-	; developers' intended solution, though it unfortunately only fixed the
-	; fourth note. So, in order to fix the bug for good, the notes on the
-	; following line have to be lowered by yet another octave.
-	dc.b	nRst, $06, nE5, $03, $03, $06, nRst, nE4, $24
-    endif
 	smpsPSGAlterVol     $01
 
 Mus83_MZ_Jump05:

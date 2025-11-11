@@ -16,7 +16,7 @@ Mus8C_Boss_Header:
 
 ; FM5 Data
 Mus8C_Boss_FM5:
-	smpsSetvoice        $05
+	smpsSetvoice        $03
 
 Mus8C_Boss_Jump03:
 	dc.b	nFs7, $0C, nFs7, nFs7, nFs7
@@ -44,13 +44,11 @@ Mus8C_Boss_FM2:
 	smpsSetvoice        $00
 
 Mus8C_Boss_Jump02:
-	smpsNop             $01
 	dc.b	nFs4, $06, nFs5, nFs4, nFs5, nFs4, nFs5, nFs4, nFs5
 	smpsCall            Mus8C_Boss_Call02
 	dc.b	nB3, $06, nE4, nE4, $0C, nB3, $06
 	smpsCall            Mus8C_Boss_Call02
 	dc.b	nE4, $06, nD4, nD4, $0C, nD4, $06, nCs4, $30
-	smpsNop             $01
 	smpsJump            Mus8C_Boss_Jump02
 
 Mus8C_Boss_Call02:
@@ -183,42 +181,6 @@ Mus8C_Boss_Voices:
 	smpsVcTotalLevel    $00, $27, $12, $1A
 
 ;	Voice $03
-;	$30
-;	$30, $30, $30, $30, 	$9E, $D8, $DC, $DC, 	$0E, $0A, $04, $05
-;	$08, $08, $08, $08, 	$BF, $BF, $BF, $BF, 	$14, $3C, $14, $80
-	smpsVcAlgorithm     $00
-	smpsVcFeedback      $06
-	smpsVcUnusedBits    $00
-	smpsVcDetune        $03, $03, $03, $03
-	smpsVcCoarseFreq    $00, $00, $00, $00
-	smpsVcRateScale     $03, $03, $03, $02
-	smpsVcAttackRate    $1C, $1C, $18, $1E
-	smpsVcAmpMod        $00, $00, $00, $00
-	smpsVcDecayRate1    $05, $04, $0A, $0E
-	smpsVcDecayRate2    $08, $08, $08, $08
-	smpsVcDecayLevel    $0B, $0B, $0B, $0B
-	smpsVcReleaseRate   $0F, $0F, $0F, $0F
-	smpsVcTotalLevel    $00, $14, $3C, $14
-
-;	Voice $04
-;	$39
-;	$01, $51, $00, $00, 	$1F, $5F, $5F, $5F, 	$10, $11, $09, $09
-;	$07, $00, $00, $00, 	$2F, $2F, $2F, $1F, 	$20, $22, $20, $80
-	smpsVcAlgorithm     $01
-	smpsVcFeedback      $07
-	smpsVcUnusedBits    $00
-	smpsVcDetune        $00, $00, $05, $00
-	smpsVcCoarseFreq    $00, $00, $01, $01
-	smpsVcRateScale     $01, $01, $01, $00
-	smpsVcAttackRate    $1F, $1F, $1F, $1F
-	smpsVcAmpMod        $00, $00, $00, $00
-	smpsVcDecayRate1    $09, $09, $11, $10
-	smpsVcDecayRate2    $00, $00, $00, $07
-	smpsVcDecayLevel    $01, $02, $02, $02
-	smpsVcReleaseRate   $0F, $0F, $0F, $0F
-	smpsVcTotalLevel    $00, $20, $22, $20
-
-;	Voice $05
 ;	$3A
 ;	$42, $43, $14, $71, 	$1F, $12, $1F, $1F, 	$04, $02, $04, $0A
 ;	$01, $01, $02, $0B, 	$1F, $1F, $1F, $1F, 	$1A, $16, $19, $80

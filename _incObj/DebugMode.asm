@@ -91,7 +91,7 @@ Debug_Control:
 		move.b	#1,(v_debugspeedtimer).w
 		addq.b	#1,(v_debugspeed).w
 		bne.s	.dirpressed
-		move.b	#-1,(v_debugspeed).w
+		st.b	(v_debugspeed).w
 
 .dirpressed:
 		move.b	(v_jpadhold1).w,d4
@@ -176,7 +176,7 @@ Debug_ChgItem:
 		add.w	d1,d0
 		move.b	4(a2,d0.w),obSubtype(a1)
 		move.l	(a2,d0.w),(a1)
-		move.b	#0,(a1)
+		clr.b	(a1)
 		cmpi.l	#Monitor,(a1)
 		bne.s	.return
 		move.b	#9,subtype(a1)
@@ -191,7 +191,7 @@ Debug_ChgItem:
 		moveq	#0,d0
 		move.w	d0,(v_debuguse).w ; deactivate debug mode
 		move.l	#Map_Sonic,(v_player+obMap).w
-		move.w	#$780,(v_player+obGfx).w
+		move.w	#make_art_tile(ArtTile_Sonic,0,0),(v_player+obGfx).w
 		move.b	d0,(v_player+obAnim).w
 		move.w	d0,obX+2(a0)
 		move.w	d0,obY+2(a0)
@@ -203,7 +203,7 @@ Debug_ChgItem:
 		clr.w	(v_ssangle).w
 		move.w	#$40,(v_ssrotate).w ; set new level rotation speed
 		move.l	#Map_Sonic,(v_player+obMap).w
-		move.w	#$780,(v_player+obGfx).w
+		move.w	#make_art_tile(ArtTile_Sonic,0,0),(v_player+obGfx).w
 		move.b	#id_Roll,(v_player+obAnim).w
 		bset	#2,(v_player+obStatus).w
 		bset	#1,(v_player+obStatus).w

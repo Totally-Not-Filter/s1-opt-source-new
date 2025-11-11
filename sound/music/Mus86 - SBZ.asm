@@ -47,7 +47,6 @@ Mus86_SBZ_Loop0F:
 Mus86_SBZ_FM2:
 	smpsSetvoice        $00
 	smpsAlterVol        $FD
-	smpsNop             $01
 	smpsNoteFill        $06
 	dc.b	nA3, $03, nB3, nRst, nC4, nRst, nD4, nE4
 	smpsNoteFill        $00
@@ -93,7 +92,6 @@ Mus86_SBZ_Loop0E:
 	smpsLoop            $00, $02, Mus86_SBZ_Loop0E
 	smpsLoop            $01, $04, Mus86_SBZ_Loop0B
 	smpsNoteFill        $00
-	smpsNop             $01
 	smpsJump            Mus86_SBZ_FM2
 
 Mus86_SBZ_Call08:
@@ -125,10 +123,7 @@ Mus86_SBZ_Loop06:
 	smpsCall            Mus86_SBZ_Call07
 	smpsLoop            $00, $02, Mus86_SBZ_Loop06
 	smpsAlterVol        $08
-	; [BUG] The detune in this channel is not reset upon loop,
-	;   thus causing the looped intro to be slightly off-tune.
-	;   Uncomment the following line to fix this.
-	;smpsAlterNote       $00
+	smpsAlterNote       $00
 	smpsJump            Mus86_SBZ_FM3
 
 ; FM4 Data
