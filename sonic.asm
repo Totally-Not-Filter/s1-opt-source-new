@@ -2446,9 +2446,9 @@ LevelSelect:
 		move.w	(v_levselsound).w,d0
 ;		tst.b	(f_creditscheat).w ; is Japanese Credits cheat on?
 ;		beq.s	LevSel_NoCheat	; if not, branch
-		cmpi.w	#$9F,d0		; is sound $9F being played?
+		cmpi.w	#$1F,d0		; is sound $9F being played?
 		beq.s	LevSel_Ending	; if yes, branch
-		cmpi.w	#$9E,d0		; is sound $9E being played?
+		cmpi.w	#$1E,d0		; is sound $9E being played?
 		beq.s	LevSel_Credits	; if yes, branch
 
 LevSel_NoCheat:
@@ -2848,12 +2848,33 @@ LevelMenuText:
 ; ---------------------------------------------------------------------------
 MusicList:
 		dc.b bgm_GHZ	; GHZ
+		dc.b bgm_GHZ	; GHZ
+		dc.b bgm_GHZ	; GHZ
+		dc.b bgm_GHZ	; GHZ
 		dc.b bgm_LZ	; LZ
+		dc.b bgm_LZ	; LZ
+		dc.b bgm_LZ	; LZ
+		dc.b bgm_SBZ	; LZ
+		dc.b bgm_MZ	; MZ
+		dc.b bgm_MZ	; MZ
+		dc.b bgm_MZ	; MZ
 		dc.b bgm_MZ	; MZ
 		dc.b bgm_SLZ	; SLZ
+		dc.b bgm_SLZ	; SLZ
+		dc.b bgm_SLZ	; SLZ
+		dc.b bgm_SLZ	; SLZ
+		dc.b bgm_SYZ	; SYZ
+		dc.b bgm_SYZ	; SYZ
+		dc.b bgm_SYZ	; SYZ
 		dc.b bgm_SYZ	; SYZ
 		dc.b bgm_SBZ	; SBZ
-		zonewarning MusicList,1
+		dc.b bgm_SBZ	; SBZ
+		dc.b bgm_FZ	; SBZ
+		dc.b bgm_SBZ	; SBZ
+		zonewarning MusicList,4
+		dc.b bgm_FZ	; Ending
+		dc.b bgm_FZ	; Ending
+		dc.b bgm_FZ	; Ending
 		dc.b bgm_FZ	; Ending
 		even
 ; ===========================================================================
@@ -2947,18 +2968,9 @@ Level_WaterPal:
 Level_GetBgm:
 		tst.w	(f_demo).w
 		bmi.s	Level_SkipTtlCard
-		moveq	#0,d0
-		move.b	v_zone.w,d0
-		cmpi.w	#(id_LZ<<8)+3,v_zone.w ; is level SBZ3?
-		bne.s	Level_BgmNotLZ4	; if not, branch
-		moveq	#5,d0		; use 5th music (SBZ)
-
-Level_BgmNotLZ4:
-		cmpi.w	#(id_SBZ<<8)+2,v_zone.w ; is level FZ?
-		bne.s	Level_PlayBgm	; if not, branch
-		moveq	#6,d0		; use 6th music (FZ)
-
-Level_PlayBgm:
+		move.w	v_zone.w,d0
+		ror.b	#2,d0
+		lsr.w	#6,d0
 		lea	MusicList(pc),a1 ; load music playlist
 		move.b	(a1,d0.w),d0
 		move.b	d0,(v_snddriver_ram.v_soundqueue0).w
@@ -4007,7 +4019,7 @@ GM_Ending:
 		move.w	#id_EndZ<<8,v_zone.w ; set level number to 0600 (extra flowers)
 		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
-		move.w	#(id_EndZ<<8)+1,v_zone.w ; set level number to 0601 (no flowers)
+		addq.b	#1,v_act.w ; set level number to 0601 (no flowers)
 
 End_LoadData:
 		moveq	#plcid_Ending,d0
@@ -4089,6 +4101,7 @@ End_MainLoop:
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).w
 		bsr.w	ObjPosLoad
+		bsr.w	AnimateLevelGfx
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
@@ -4114,11 +4127,12 @@ End_AllEmlds:
 		move.w	#VBla_0C,v_vbla_routine.w
 		bsr.w	WaitForVBla
 		addq.w	#1,(v_framecount).w
-		bsr.w	End_MoveSonic
+		bsr.s	End_MoveSonic
 		jsr	(ExecuteObjects).w
 		bsr.w	DeformLayers
 		jsr	(BuildSprites).w
 		bsr.w	ObjPosLoad
+		bsr.w	AnimateLevelGfx
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
 		subq.w	#1,(v_palchgspeed).w
@@ -4130,14 +4144,14 @@ End_SlowFade:
 		tst.w	(f_restart).w
 		beq.s	End_AllEmlds
 		clr.w	(f_restart).w
-		move.l	#$AAABAE9A,(Level_layout_header+$C4).w
-		move.l	#$ACADAFB0,(Level_layout_header+$E2).w
-		lea	(vdp_control_port).l,a5
-		lea	vdp_data_port-vdp_control_port(a5),a6
-		lea	(v_screenposx).w,a3
-		lea	(Level_layout_main).w,a4
-		move.w	#$4000,d2
-		bsr.w	DrawChunks
+;		move.l	#$AAABAE9A,(Level_layout_header+$C4).w
+;		move.l	#$ACADAFB0,(Level_layout_header+$E2).w
+;		lea	(vdp_control_port).l,a5
+;		lea	vdp_data_port-vdp_control_port(a5),a6
+;		lea	(v_screenposx).w,a3
+;		lea	(Level_layout_main).w,a4
+;		move.w	#$4000,d2
+;		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
 		bsr.w	PalLoad_Fade	; load ending palette
 		bsr.w	PaletteWhiteIn
@@ -4158,7 +4172,7 @@ End_MoveSonic:
 
 		addq.b	#2,(v_sonicend).w
 		move.b	#1,(f_lockctrl).w ; lock player's controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; move Sonic to the right
+		move.w	#btnR<<8,(v_jpadhold2).w ; move Sonic to the right
 		rts
 ; ===========================================================================
 
@@ -4174,8 +4188,7 @@ End_MoveSon2:
 		move.w	d0,(v_jpadhold2).w ; stop Sonic moving
 		move.w	d0,(v_player+obInertia).w
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
-		move.b	#fr_Wait2,(v_player+obFrame).w
-		move.w	#(id_Wait<<8)+id_Wait,(v_player+obAnim).w ; use "standing" animation
+		move.b	#id_Wait_Ending,(v_player+obAnim).w ; use "standing" animation
 		move.b	#3,(v_player+obTimeFrame).w
 		rts
 ; ===========================================================================
@@ -4368,7 +4381,7 @@ TryAg_MainLoop:
 		bsr.w	WaitForVBla
 		jsr	(ExecuteObjects).w
 		jsr	(BuildSprites).w
-		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
+		btst	#bitStart,(v_jpadpress1).w ; is Start button pressed?
 		bne.s	TryAg_Exit	; if yes, branch
 		tst.w	v_generictimer.w ; has 30 seconds elapsed?
 		beq.s	TryAg_Exit	; if yes, branch
@@ -7218,7 +7231,7 @@ Level_Index:	dc.l Level_GHZ1	; MJ: unused data and BG data have been stripped ou
 		dc.l Level_SBZ2
 		dc.l Level_Null
 		dc.l Level_End
-		dc.l Level_End
+		dc.l Level_End_Good
 		dc.l Level_Null
 		dc.l Level_Null
 
@@ -7261,6 +7274,8 @@ Level_SBZ1:	binclude	"levels/sbz1.bin"
 Level_SBZ2:	binclude	"levels/sbz2.bin"
 		even
 Level_End:	binclude	"levels/ending.bin"
+		even
+Level_End_Good:	binclude	"levels/ending_good.bin"
 		even
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
