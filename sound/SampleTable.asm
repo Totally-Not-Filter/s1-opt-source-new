@@ -3,7 +3,7 @@
 SampleTable:
 	;			type			pointer		Hz
 	dcSample	TYPE_DPCM, 		Kick, 		8000				; $81
-	dcSample	TYPE_PCM,		Snare,		24000				; $82
+	dcSample	TYPE_DPCM,		Snare,		16500				; $82
 	dcSample	TYPE_DPCM, 		Timpani, 	7250				; $83
 	dcSample	TYPE_NONE										; $84
 	dcSample	TYPE_NONE										; $85
@@ -18,7 +18,7 @@ SampleTable:
 
 ; ---------------------------------------------------------------
 	incdac	Kick, "sound/dac/dpcm/kick.bin"
-	incdac	Snare, "sound/dac/pcm/snare.pcm"
+	incdac	Snare, "sound/dac/dpcm/snare.bin"
 	incdac	Timpani, "sound/dac/dpcm/timpani.bin"
 	incdac	SegaPCM, "sound/dac/pcm/sega.raw"
 	even
