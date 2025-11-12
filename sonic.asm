@@ -24,10 +24,7 @@ FixBugs		  = 1	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
-debugbuild = 1
-
-dummymapfix = 0
-
+	include	"Equates.asm"
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
