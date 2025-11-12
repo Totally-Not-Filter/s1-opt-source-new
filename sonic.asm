@@ -95,7 +95,6 @@ Vectors:
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
-	if Revision<>2
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
@@ -104,20 +103,6 @@ Vectors:
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
-	else
-loc_E0:
-		; Relocated code from Spik_Hurt. REVXB was a nasty hex-edit.
-		move.l	obY(a0),d3
-		move.w	obVelY(a0),d0
-		ext.l	d0
-		asl.l	#8,d0
-		jmp	(loc_D5A2).l
-
-		dc.w ErrorTrap
-		dc.l ErrorTrap
-		dc.l ErrorTrap
-		dc.l ErrorTrap
-	endif
 		dc.b "SEGA MEGA DRIVE " ; Hardware system ID (Console name)
 		dc.b "(C)SEGA 1991.APR" ; Copyright holder and release date (generally year)
 		dc.b "SONIC THE               HEDGEHOG                " ; Domestic name
@@ -235,7 +220,7 @@ SkipSetup:
 
 ; ===========================================================================
 SetupValues:	dc.w $8000		; VDP register start number
-		dc.w $3FFF		; size of RAM/4
+		dc.w bytesToLcnt(v_ram_end-v_ram_start)		; size of RAM/4
 		dc.w $100		; VDP register diff
 
 		dc.l z80_ram		; start of Z80 RAM
@@ -365,19 +350,6 @@ MainGameLoop:
 		movea.l	v_gamemode.w,a0 ; load Game Mode
 		jsr	(a0)
 		bra.s	MainGameLoop	; loop indefinitely
-; ===========================================================================
-
-CheckSumError:
-		bsr.w	VDPSetupGame
-		move.l	#$C0000000,vdp_control_port ; set VDP to CRAM write
-		moveq	#bytesToWcnt($80),d7
-
-.fillred:
-		move.w	#cRed,vdp_data_port ; fill palette with red
-		dbf	d7,.fillred	; repeat until CRAM is filled
-
-.endlessloop:
-		bra.s	.endlessloop
 ; ===========================================================================
 
 Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
@@ -638,7 +610,8 @@ HBlank:
 	rept 32
 		move.l	(a0)+,(a1)	; move palette to CRAM
 	endr
-		movem.l	(sp)+,a0-a1
+		movea.l	(sp)+,a0
+		movea.l	(sp)+,a1
 		tst.b	f_doupdatesinhblank.w
 		bne.s	loc_119E
 
@@ -958,7 +931,7 @@ loc_1AE10:
 		dbf	d7,loc_1AE10
 
 loc_1AE18:
-		subi.w	#$50-1,d6
+		subi.w	#80-1,d6
 		neg.w	d6
 		move.b	d6,(v_spritecount).w
 		rts
@@ -1899,7 +1872,7 @@ PalCycle_Sega:
 		tst.b	(v_pcyc_time+1).w
 		bne.s	loc_206A
 		lea	(v_palette+$20).w,a1
-		lea	(Pal_Sega1).l,a0
+		lea	Pal_Sega1(pc),a0
 		moveq	#5,d1
 		move.w	(v_pcyc_num).w,d0
 
@@ -1959,8 +1932,7 @@ loc_206A:
 
 loc_2088:
 		move.w	d0,(v_pcyc_num).w
-		lea	(Pal_Sega2).l,a0
-		lea	(a0,d0.w),a0
+		lea	Pal_Sega2(pc,d0.w),a0
 		lea	(v_palette+$04).w,a1
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
