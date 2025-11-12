@@ -220,7 +220,7 @@ UpdateMusic:
 .dotempo:
 		move.b	SMPS_RAM.v_main_tempo(a6),d0
 		add.b	d0,SMPS_RAM.v_main_tempo_timeout(a6)	; Has main tempo timer expired?
-		bcc.s	.skipdelay
+		bhs.s	.skipdelay
 		addq.b	#1,SMPS_RAM.v_music_dac_track+SMPS_Track.DurationTimeout(a6)
 		addq.b	#1,SMPS_RAM.v_music_fm1_track+SMPS_Track.DurationTimeout(a6)
 		addq.b	#1,SMPS_RAM.v_music_fm2_track+SMPS_Track.DurationTimeout(a6)

@@ -4011,6 +4011,8 @@ End_LoadData:
 		bset	#2,(v_fg_scroll_flags).w
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
+		move.l	#Col_GHZ_1,(v_colladdr1).w
+		move.l	#Col_GHZ_2,(v_colladdr2).w
 		enable_ints
 		lea	(KosPlus_EndFlowers).l,a0 ; load extra flower patterns
 		lea	(v_128x128_end-$1000).l,a1 ; RAM address to buffer the patterns
@@ -4028,8 +4030,8 @@ End_LoadSonic:
 		move.l	#SonicPlayer,(v_player).w ; load Sonic object
 		bset	#0,(v_player+obStatus).w ; make Sonic face left
 		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
-		move.w	#-$800,(v_player+obInertia).w ; set Sonic's speed
+		move.w	#btnL<<8,(v_jpadhold2).w ; move Sonic to the left
+		move.w	#-$600,(v_player+obInertia).w ; set Sonic's speed
 		st.b	(f_hud).w ; load HUD object
 		bsr.w	ObjPosLoad
 		jsr	(ExecuteObjects).w
