@@ -3375,6 +3375,13 @@ GM_Special:
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	NewPLC	; load special stage patterns
 
+.waitplc:
+		bsr.w	Process_KosPlus_Queue
+		bsr.w	ProcessDMAQueue
+		bsr.w	Process_KosPlus_Module_Queue
+		tst.w	(KosPlus_modules_left).w ; are there any items in the pattern load cue?
+		bne.s	.waitplc ; if yes, branch
+
 		clearRAM v_objspace
 		clearRAM v_levelvariables
 		clearRAM v_timingvariables
