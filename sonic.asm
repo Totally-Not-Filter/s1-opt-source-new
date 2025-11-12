@@ -4130,7 +4130,8 @@ End_SlowFade:
 		tst.w	(f_restart).w
 		beq.s	End_AllEmlds
 		clr.w	(f_restart).w
-;		move.w	#$2E2F,(v_lvllayout+$80).w ; modify level layout
+		move.l	#$AAABAE9A,(Level_layout_header+$C4).w
+		move.l	#$ACADAFB0,(Level_layout_header+$E2).w
 		lea	(vdp_control_port).l,a5
 		lea	vdp_data_port-vdp_control_port(a5),a6
 		lea	(v_screenposx).w,a3
