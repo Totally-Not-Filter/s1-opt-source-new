@@ -21,6 +21,9 @@ SMPS_SPECIAL_SFX_PSG_TRACK_COUNT = (SMPS_RAM.v_spcsfx_psg_tracks_end-SMPS_RAM.v_
 ; 0: Use a lookup table for every octave. Good for fast processing.
 ; 1: Use a lookup table for one octave, manually calculate the remaining 6. Good for saving space.
 FMFreqCalc = 0
+
+S2_Support = 0
+S3K_Support = 0
 ; ---------------------------------------------------------------------------
 ; SMPS2ASM - A collection of macros that make SMPS's bytecode human-readable.
 ; ---------------------------------------------------------------------------
@@ -40,6 +43,12 @@ PSG_Index:
 		dc.l PSG7
 		dc.l PSG8
 		dc.l PSG9
+	if S2_Support
+		dc.l PSG10
+		dc.l PSG11
+		dc.l PSG12
+		dc.l PSG13
+	endif
 
 PSG1:		dc.b 0,0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,$80
 
@@ -60,6 +69,27 @@ PSG8:		dc.b 0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5
 		dc.b 5,5,6,6,6,6,6,7,7,7,$80
 
 PSG9:		dc.b 0,1,2,3,4,5,6,7,8,9,$A,$B,$C,$D,$E,$F,$80
+
+	if S2_Support
+PSG10:	dc.b	0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1
+	dc.b	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+	dc.b	1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2
+	dc.b	2,2,3,3,3,3,3,3,3,3,3,3,4,$80
+
+PSG11:	dc.b	4,4,4,3,3,3,2,2,2,1,1,1,1,1,1,1
+	dc.b	2,2,2,2,2,3,3,3,3,3,4,$80
+
+PSG12:	dc.b	4,4,3,3,2,2,1,1,1,1,1,1,1,1,1,1
+	dc.b	1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2
+	dc.b	2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3
+	dc.b	3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3
+	dc.b	3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4
+	dc.b	4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5
+	dc.b	5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6
+	dc.b	6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,$80
+
+PSG13:	dc.b	$E,$D,$C,$B,$A,9,8,7,6,5,4,3,2,1,0,$80
+	endif
 ; ---------------------------------------------------------------------------
 ; New tempos for songs during speed shoes
 ; ---------------------------------------------------------------------------
@@ -483,12 +513,9 @@ DoModulation:
 ; loc_71DDA:
 .waitdone:
 		subq.b	#1,SMPS_Track.ModulationSpeed(a5)	; Update speed
-		beq.s	.updatemodulation			; If it expired, want to update modulation
-		addq.w	#4,sp					; Do not return to caller
-		rts
-; ===========================================================================
+		bne.s	.donutreturn			; If it hasn't expired, do not return
 ; loc_71DE2:
-.updatemodulation:
+;.updatemodulation:
 		movea.l	SMPS_Track.ModulationPtr(a5),a0		; Get modulation data
 		move.b	1(a0),SMPS_Track.ModulationSpeed(a5)	; Restore modulation speed
 		tst.b	SMPS_Track.ModulationSteps(a5)		; Check number of steps
@@ -522,11 +549,11 @@ FMPrepareNote:
 		beq.s	FMSetRest				; Branch if zero
 ; loc_71E24:
 FMUpdateFreq:
+		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is track being overridden?
+		bne.s	locret_71E48				; Return if so
 		move.b	SMPS_Track.Detune(a5),d0		; Get detune value
 		ext.w	d0
 		add.w	d0,d6					; Add note frequency
-		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is track being overridden?
-		bne.s	locret_71E48				; Return if so
 		move.w	d6,-(sp)
 		move.b	(sp)+,d1
 		moveq	#signextendB($A4),d0			; Register for upper 6 bits of frequency
@@ -637,7 +664,7 @@ PauseMusic:
 
 ; Sound_Play:
 CycleSoundQueue:
-		lea	(SoundPriorities).l,a0
+		lea	SoundPriorities.l,a0
 		lea	SMPS_RAM.v_soundqueue0(a6),a1	; load music track number
 		_move.b	SMPS_RAM.v_sndprio(a6),d3	; Get priority of currently playing SFX
 		moveq	#SMPS_RAM.v_soundqueue_end-SMPS_RAM.v_soundqueue_start-1,d4
@@ -749,10 +776,10 @@ Sound_PlayBGM:
 ; loc_7202C:
 .bgm_loadMusic:
 		bsr.w	InitMusicPlayback
-		lea	(SpeedUpIndex).l,a4
+		lea	SpeedUpIndex.l,a4
 ;		subq.b	#bgm__First,d7
 		move.b	-1(a4,d7.w),SMPS_RAM.v_speeduptempo(a6)
-		lea	(MusicIndex).l,a4
+		lea	MusicIndex.l,a4
 		add.w	d7,d7
 		add.w	d7,d7
 		movea.l	-4(a4,d7.w),a4		; a4 now points to (uncompressed) song data
@@ -945,7 +972,7 @@ Sound_PlaySFX:
 		move.b	#$80,SMPS_RAM.f_push_playing(a6)	; Mark it as playing
 ; Sound_notA7:
 .sfx_notPush:
-		lea	(SoundIndex).l,a0
+		lea	SoundIndex.l,a0
 		subi.b	#sfx__First,d7		; Make it 0-based
 		add.w	d7,d7			; Convert sfx ID into index
 		add.w	d7,d7
@@ -1063,7 +1090,7 @@ SFX_SFXChannelRAM:
 Sound_PlaySpecial:
 		tst.b	SMPS_RAM.f_1up_playing(a6)	; Is 1-up playing?
 		bne.w	.locret				; Return if so
-		lea	(SpecSoundIndex).l,a0
+		lea	SpecSoundIndex.l,a0
 		subi.b	#spec__First,d7			; Make it 0-based
 		add.w	d7,d7
 		add.w	d7,d7
@@ -1587,7 +1614,7 @@ PSGSetFreq:
 		subi.b	#$81,d5				; Convert to 0-based index
 		bcs.s	.restpsg			; If $80, put track at rest
 		add.b	SMPS_Track.Transpose(a5),d5	; Add in channel transposition
-		andi.w	#$7F,d5				; Clear high byte and sign bit
+		andi.w	#$FF,d5				; Clear high byte and sign bit
 		add.w	d5,d5
 		move.w	PSGFrequencies(pc,d5.w),SMPS_Track.Freq(a5)	; Set new frequency
 		rts
@@ -1639,13 +1666,12 @@ PSGDoNoteOn:
 
 ; sub_728E2:
 PSGUpdateFreq:
+		moveq	#%0110,d0
+		and.b	SMPS_Track.PlaybackControl(a5),d0
+		bne.s	.locret
 		move.b	SMPS_Track.Detune(a5),d0		; Get detune value
 		ext.w	d0
 		add.w	d0,d6					; Add to frequency
-		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is track being overridden?
-		bne.s	.locret					; Return if yes
-		btst	#1,SMPS_Track.PlaybackControl(a5)	; Is track at rest?
-		bne.s	.locret					; Return if yes
 		move.b	SMPS_Track.VoiceControl(a5),d0		; Get channel bits
 		cmpi.b	#$E0,d0		; Is it a noise channel?
 		bne.s	.notnoise	; Branch if not
@@ -1702,10 +1728,6 @@ PSGDoVolFX:
 
 ; sub_7296A:
 SetPSGVolume:
-;		btst	#1,SMPS_Track.PlaybackControl(a5)	; Is track at rest?
-;		bne.s	locret_7298A				; Return if so
-;		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is SFX overriding?
-;		bne.s	locret_7298A				; Return if so
 		moveq	#%0110,d0
 		and.b	SMPS_Track.PlaybackControl(a5),d0
 		bne.s	locret_7298A
@@ -2017,6 +2039,8 @@ cfStopSpecialFM4:
 ; loc_72C22:
 .locexit:
 		addq.w	#8,sp	; Tamper with return value so we don't return to caller
+
+.exitreturn:
 		rts
 ; ===========================================================================
 ; loc_72C26:
@@ -2025,7 +2049,7 @@ cfSetVoice:
 		move.b	(a4)+,d0				; Get new voice
 		move.b	d0,SMPS_Track.VoiceIndex(a5)		; Store it
 		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is SFX overriding this track?
-		bne.w	locret_72CAA				; Return if yes
+		bne.s	cfStopSpecialFM4.exitreturn				; Return if yes
 		movea.l	SMPS_RAM.v_voice_ptr(a6),a1		; Music voice pointer
 		tst.b	SMPS_RAM.f_voice_selector(a6)		; Are we updating a music track?
 		beq.s	SetVoice				; If yes, branch
