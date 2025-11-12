@@ -135,10 +135,11 @@ Mus86_SBZ_FM4:
 	smpsCall            Mus86_SBZ_Call03
 	smpsAlterNote       $04
 	smpsCall            Mus86_SBZ_Call01
-	smpsAlterVol        $06
+;	smpsAlterVol        $06
 	smpsSetvoice        $05
 	smpsAlterNote       $02
-	smpsAlterVol        $ED
+;	smpsAlterVol        $ED
+	smpsAlterVol        $F3
 	smpsAlterPitch      $F4
 	smpsCall            Mus86_SBZ_Call04
 	smpsAlterVol        $13
@@ -164,8 +165,9 @@ Mus86_SBZ_Loop05:
 	smpsAlterNote       $00
 	dc.b	$1C
 	smpsLoop            $00, $02, Mus86_SBZ_Loop05
-	smpsAlterVol        $06
-	smpsAlterVol        $01
+;	smpsAlterVol        $06
+;	smpsAlterVol        $01
+	smpsAlterVol        $07
 	smpsJump            Mus86_SBZ_FM4
 
 Mus86_SBZ_Call03:

@@ -2642,24 +2642,24 @@ LevSelControls:
 		move.b	(v_jpadpress1).w,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed and held?
 		bne.s	LevSel_UpDown	; if yes, branch
-		subq.w	#1,(v_levseldelay).w ; subtract 1 from time to next move
+		subq.b	#1,(v_levseldelay).w ; subtract 1 from time to next move
 		bpl.s	LevSel_SndTest	; if time remains, branch
 
 LevSel_UpDown:
-		move.w	#$C-1,(v_levseldelay).w ; reset time delay
+		move.b	#$C-1,(v_levseldelay).w ; reset time delay
 		move.b	(v_jpadhold1).w,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed?
 		beq.s	LevSel_SndTest	; if not, branch
 		move.w	(v_levselitem).w,d0
-		cmpi.b	#btnUp,d1	; is up pressed?
-		bne.s	LevSel_Down	; if not, branch
+		btst	#bitUp,d1	; is up pressed?
+		beq.s	LevSel_Down	; if not, branch
 		subq.w	#1,d0		; move up 1 selection
 		bhs.s	LevSel_Down
 		moveq	#$14,d0		; if selection moves below 0, jump to selection $14
 
 LevSel_Down:
-		cmpi.b	#btnDn,d1	; is down pressed?
-		bne.s	LevSel_Refresh	; if not, branch
+		btst	#bitDn,d1	; is down pressed?
+		beq.s	LevSel_Refresh	; if not, branch
 		addq.w	#1,d0		; move down 1 selection
 		cmpi.w	#$15,d0
 		blo.s	LevSel_Refresh
@@ -2680,13 +2680,13 @@ LevSel_SndTest:
 		andi.b	#btnR+btnL,d1	; is left/right pressed?
 		beq.s	LevSel_NoMove	; if not, branch
 		move.w	(v_levselsound).w,d0
-		cmpi.b	#btnL,d1	; is left pressed?
-		bne.s	LevSel_Right	; if not, branch
+		btst	#bitL,d1	; is left pressed?
+		beq.s	LevSel_Right	; if not, branch
 		subq.w	#1,d0		; subtract 1 from sound test
 
 LevSel_Right:
-		cmpi.b	#btnR,d1	; is right pressed?
-		bne.s	LevSel_Refresh2	; if not, branch
+		btst	#bitR,d1	; is right pressed?
+		beq.s	LevSel_Refresh2	; if not, branch
 		addq.w	#1,d0		; add 1 to sound test
 
 LevSel_Refresh2:
@@ -4005,6 +4005,13 @@ GM_Ending:
 End_LoadData:
 		moveq	#plcid_Ending,d0
 		bsr.w	AddPLC	; load ending sequence patterns
+
+.waitplc:
+		bsr.w	Process_KosPlus_Queue
+		bsr.w	ProcessDMAQueue
+		bsr.w	Process_KosPlus_Module_Queue
+		tst.w	(KosPlus_modules_left).w ; are there any items in the pattern load cue?
+		bne.s	.waitplc ; if yes, branch
 		jsr	(Hud_Base).l
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers

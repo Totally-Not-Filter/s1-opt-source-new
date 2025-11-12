@@ -279,9 +279,10 @@ Mus91_Credits_Loop0D:
 	dc.b	nB5, $24, smpsNoAttack, $18, smpsNoAttack, $5A, nRst, $06
 	smpsAlterPitch      $18
 	dc.b	nRst, $60, nRst, nRst, $30
-	smpsAlterPitch      $E8
+;	smpsAlterPitch      $E8
 	smpsSetvoice        $08
-	smpsAlterPitch      $0C
+;	smpsAlterPitch      $0C
+	smpsAlterPitch      $F4
 	smpsAlterVol        $03
 	smpsAlterNote       $02
 	dc.b	nRst, $18, nA5, $06, nB5, nC6, nE6
@@ -534,10 +535,11 @@ Mus91_Credits_Loop07:
 	dc.b	nF5, $01, smpsNoAttack, nE5, $0B, nRst, $0C, nEb5, $01, smpsNoAttack, nD5, $0B
 	dc.b	nRst, $0C, nFs5, $01, smpsNoAttack, nF5, $1B, nRst, $08, nF5, $01, smpsNoAttack
 	dc.b	nE5, $24, smpsNoAttack, $18, smpsNoAttack, $5A, nRst, $06
-	smpsAlterPitch      $18
+;	smpsAlterPitch      $18
 	smpsPan             panCenter, $00
 	smpsAlterVol        $03
-	smpsAlterPitch      $0C
+;	smpsAlterPitch      $0C
+	smpsAlterPitch      $24
 	smpsSetvoice        $07
 	dc.b	nRst, $4E, nG4, $03, nA4, nC5, nRst, nA4, nRst, $51, nA5, $03
 	dc.b	nF5, nC5, nRst, nF5, nRst, $5D
