@@ -441,7 +441,7 @@ VBla_02:
 		rts
 
 VBla_14:
-		bsr.w	ReadJoypads
+		bsr.w	sub_106E
 		tst.w	v_generictimer.w
 		beq.s	.end
 		subq.w	#1,v_generictimer.w
@@ -545,7 +545,7 @@ VBla_0C:
 		writeVRAMsrcdefined	v_spritetablebuffer,vram_sprites
 		bsr.w	ProcessDMAQueue
 		movem.l	v_screenposx.w,d0-d7
-		movem.l	d0-d7,(v_screenposx_dup.w
+		movem.l	d0-d7,v_screenposx_dup.w
 		movem.l	v_fg_scroll_flags.w,d0-d1
 		movem.l	d0-d1,v_fg_scroll_flags_dup.w
 		bsr.w	LoadTilesAsYouMove
@@ -2110,22 +2110,25 @@ WaitForVBla:
 ; ---------------------------------------------------------------------------
 
 GM_Sega:
-		move.b	#bgm_Stop,(v_snddriver_ram.v_soundqueue0).w
+		move.b	#bgm_Stop,v_snddriver_ram.v_soundqueue0.w
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
-		lea	(vdp_control_port).l,a6
+		lea	vdp_control_port,a6
 		move.w	#$8004,(a6)	; use 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$8700,(a6)	; set background colour (palette entry 0)
 		move.w	#$8B00,(a6)	; full-screen vertical scrolling
-		clr.b	(f_wtr_state).w
+		clr.b	f_wtr_state.w
 		disable_ints
-		move.w	(v_vdp_buffer1).w,d0
+		move.w	v_vdp_buffer1.w,d0
 		andi.b	#$BF,d0
-		move.w	d0,(vdp_control_port).l
+		move.w	d0,vdp_control_port
 		bsr.w	ClearScreen
-		lea	(KosPM_SegaLogo).l,a1 ; load Sega logo patterns
+
+		clearRAM v_objspace
+
+		lea	KosPM_SegaLogo.l,a1 ; load Sega logo patterns
 		moveq	#tiles_to_bytes(ArtTile_Sega_Tiles),d2
 		bsr.w	Queue_KosPlus_Module
 
@@ -2133,56 +2136,60 @@ GM_Sega:
 		bsr.w	Process_KosPlus_Queue
 		bsr.w	ProcessDMAQueue
 		bsr.w	Process_KosPlus_Module_Queue
-		tst.w	(KosPlus_modules_left).w ; are there any items in the pattern load cue?
+		tst.w	KosPlus_modules_left.w ; are there any items in the pattern load cue?
 		bne.s	.waitplc ; if yes, branch
 
-		lea	(Eni_SegaLogo).l,a0 ; load Sega logo mappings
-		lea	(v_128x128).l,a1
+		lea	Eni_SegaLogo.l,a0 ; load Sega logo mappings
+		lea	v_128x128.l,a1
 		moveq	#make_art_tile(ArtTile_Sega_Tiles,0,FALSE),d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128,vram_bg+$510,24,8
 		copyTilemap	v_128x128+24*8*2,vram_fg,40,28
 
-		if Revision<>0
-			tst.b	(v_megadrive).w	; is console Japanese?
-			bmi.s	.loadpal
-			copyTilemap	v_128x128+$A40,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
-		endif
+		tst.b	v_megadrive.w	; is console Japanese?
+		bmi.s	.loadpal
+		copyTilemap	v_128x128+$A40,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
 
 .loadpal:
 		moveq	#palid_SegaBG,d0
 		bsr.w	PalLoad	; load Sega logo palette
-		move.w	#-$A,(v_pcyc_num).w
-		clr.w	(v_pcyc_time).w
-		move.w	(v_vdp_buffer1).w,d0
+		move.l	#SegaPaletteSprite,v_player.w
+		move.w	v_vdp_buffer1.w,d0
 		ori.b	#$40,d0
-		move.w	d0,(vdp_control_port).l
+		move.w	d0,vdp_control_port
 
 Sega_WaitPal:
 		move.w	#VBla_02,v_vbla_routine.w
 		bsr.w	WaitForVBla
-		btst	#bitStart,(v_jpadpress1).w
+		jsr	(ExecuteObjects).w
+		jsr	(BuildSprites).w
+		btst	#bitStart,v_jpadpress1.w
 		bne.s	Sega_WaitEnd
-		bsr.w	PalCycle_Sega
-		bne.s	Sega_WaitPal
+;		bsr.w	PalCycle_Sega
+;		bne.s	Sega_WaitPal
 
 		moveq	#signextendB($8C),d0
 		jsr	MegaPCM_PlaySample
-		move.w	#60*2+30,(v_generictimer).w
+;		move.w	#60*2+30,v_generictimer.w
 
 .wait:
-		move.w	#VBla_14,(v_vbla_routine).w
+		move.w	#VBla_14,v_vbla_routine.w
 		bsr.w	WaitForVBla
-		btst	#bitStart,(v_jpadpress1).w
+		jsr	(ExecuteObjects).w
+		jsr	(BuildSprites).w
+		btst	#bitStart,v_jpadpress1.w
 		bne.s	Sega_WaitEnd
-		tst.w	(v_generictimer).w
-		bne.s	.wait
+;		tst.w	v_generictimer.w
+;		bne.s	.wait
+		bra.s	.wait
 
 Sega_WaitEnd:
 		jsr	MegaPCM_StopPlayback
-		move.l	#GM_Title,(v_gamemode).w ; go to title screen
+		move.l	#GM_Title,v_gamemode.w ; go to title screen
 		rts
+
+		include	"_incObj/Sega Palette Sprite.asm"
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

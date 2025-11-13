@@ -740,7 +740,7 @@ Sound_PlayBGM:
 		cmpi.b	#bgm_ExtraLife,d7			; is the "extra life" music to be played?
 		bne.s	.bgmnot1up				; if not, branch
 		tst.b	SMPS_RAM.f_1up_playing(a6)		; Is a 1-up music playing?
-		bne.w	.locdblret				; if yes, branch
+		bne.s	.bgm_loadMusic				; if yes, branch
 		lea	SMPS_RAM.v_music_track_ram(a6),a5
 		moveq	#SMPS_MUSIC_TRACK_COUNT-1,d0		; 1 DAC + 6 FM + 3 PSG tracks
 ; loc_71FE6:
@@ -766,7 +766,7 @@ Sound_PlayBGM:
 		move.l	(a0)+,(a1)+
 		dbf	d0,.backupramloop
 
-		move.b	#$80,SMPS_RAM.f_1up_playing(a6)
+		st.b	SMPS_RAM.f_1up_playing(a6)
 		bra.s	.bgm_loadMusic
 ; ===========================================================================
 ; loc_72024:
@@ -812,7 +812,7 @@ Sound_PlayBGM:
 ; loc_72098:
 .bgm_fmloadloop:
 		bset	#7,SMPS_Track.PlaybackControl(a1)	; Initial playback control: set 'track playing' bit
-		move.b	(a2)+,SMPS_Track.VoiceControl(a1)	; Voice control bits
+		move.b	(a2)+,SMPS_Track.VoiceControl(a1)
 		move.b	d4,SMPS_Track.TempoDivider(a1)
 		move.b	d6,SMPS_Track.StackPointer(a1)		; set "gosub" (coord flag $F8) stack init value
 		move.b	d1,SMPS_Track.AMSFMSPan(a1)		; Set AMS/FMS/Panning
@@ -867,7 +867,7 @@ Sound_PlayBGM:
 ; loc_72126:
 .bgm_psgloadloop:
 		bset	#7,SMPS_Track.PlaybackControl(a1)	; Initial playback control: set 'track playing' bit
-		move.b	(a2)+,SMPS_Track.VoiceControl(a1)	; Voice control bits
+		move.b	(a2)+,SMPS_Track.VoiceControl(a1)
 		move.b	d4,SMPS_Track.TempoDivider(a1)
 		move.b	d6,SMPS_Track.StackPointer(a1)		; set "gosub" (coord flag $F8) stack init value
 		move.b	d5,SMPS_Track.DurationTimeout(a1)	; Set duration of first "note"
@@ -920,22 +920,18 @@ Sound_PlayBGM:
 ; loc_7219A:
 .sendfmnoteoff:
 		lea	SMPS_RAM.v_music_fm_tracks(a6),a5
-;		moveq	#SMPS_MUSIC_FM_TRACK_COUNT-1,d4		; 6 FM tracks
+		moveq	#SMPS_MUSIC_FM_TRACK_COUNT-1,d4		; 6 FM tracks
 ; loc_721A0:
-;.fmnoteoffloop:
-	rept SMPS_MUSIC_FM_TRACK_COUNT
+.fmnoteoffloop:
 		bsr.w	FMNoteOff
 		adda.w	d6,a5
-	endm
-;		dbf	d4,.fmnoteoffloop			; run all FM tracks
-;		moveq	#SMPS_MUSIC_PSG_TRACK_COUNT-1,d4	; 3 PSG tracks
+		dbf	d4,.fmnoteoffloop			; run all FM tracks
+		moveq	#SMPS_MUSIC_PSG_TRACK_COUNT-1,d4	; 3 PSG tracks
 ; loc_721AC:
-;.psgnoteoffloop:
-	rept SMPS_MUSIC_PSG_TRACK_COUNT
+.psgnoteoffloop:
 		bsr.w	PSGNoteOff
 		adda.w	d6,a5
-	endm
-;		dbf	d4,.psgnoteoffloop			; run all PSG tracks
+		dbf	d4,.psgnoteoffloop			; run all PSG tracks
 ; loc_721B6:
 .locdblret:
 		addq.w	#4,sp	; Tamper with return value to not return to caller
@@ -1017,13 +1013,11 @@ Sound_PlaySFX:
 		movea.w	SFX_SFXChannelRAM(pc,d3.w),a5
 		movea.l	a5,a2
 		moveq	#0,d2
-;		moveq	#bytesToLcnt(SMPS_Track.len),d0	; $30 bytes
+		moveq	#bytesToLcnt(SMPS_Track.len),d0	; $30 bytes
 ; loc_72276:
-;.clearsfxtrackram:
-	rept bytesToLcnt(SMPS_Track.len)
+.clearsfxtrackram:
 		move.l	d2,(a2)+
-	endm
-;		dbf	d0,.clearsfxtrackram
+		dbf	d0,.clearsfxtrackram
 
 		move.w	(a1)+,SMPS_Track.PlaybackControl(a5)	; Initial playback control bits
 		move.b	d5,SMPS_Track.TempoDivider(a5)		; Initial voice control bits
