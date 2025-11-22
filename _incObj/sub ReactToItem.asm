@@ -14,12 +14,6 @@ ReactToItem:
 		move.b	obHeight(a0),d5	; load Sonic's height
 		subq.b	#3,d5
 		sub.w	d5,d3
-		cmpi.b	#id_Duck,obAnim(a0) ; is Sonic ducking?
-		bne.s	.notducking	; if not, branch
-		addi.w	#$C,d3
-		moveq	#$A,d5
-
-.notducking:
 		moveq	#$10,d4
 		add.w	d5,d5
 		lea	(Collision_response_list).w,a4
@@ -171,6 +165,8 @@ React_Monitor:
 React_Enemy:
 		tst.b	(v_invinc).w	; is Sonic invincible?
 		bne.s	.donthurtsonic	; if yes, branch
+		cmpi.b	#id_Warp1,obAnim(a0)
+		beq.s	.donthurtsonic
 		cmpi.b	#id_Roll,obAnim(a0) ; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt	; if not, branch
 
@@ -246,7 +242,6 @@ React_ChkHurt:
 ; ===========================================================================
 
 .notinvincible:
-		nop	
 		tst.b	flashtime(a0)		; is Sonic flashing?
 		bne.s	.isflashing	; if yes, branch
 		movea.l	a1,a2
@@ -304,7 +299,7 @@ HurtSonic:
 		moveq	#sfx_Death,d0
 
 .sound:
-		move.b	d0,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d0,(v_snddriver_ram.v_soundqueue1).w
 		moveq	#-1,d0
 		rts
 ; ===========================================================================
@@ -345,7 +340,7 @@ KillSonic:
 		moveq	#sfx_Death,d0	; play normal death sound
 
 .sound:
-		move.b	d0,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d0,(v_snddriver_ram.v_soundqueue1).w
 
 .dontdie:
 		moveq	#-1,d0

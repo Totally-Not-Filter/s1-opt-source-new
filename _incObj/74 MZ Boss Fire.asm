@@ -33,7 +33,7 @@ BossFire_Main:	; Routine 0
 
 loc_1870A:
 		move.b	#$1E,objoff_29(a0)
-		move.b	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
 
 BossFire_Action:	; Routine 2
 		moveq	#0,d0

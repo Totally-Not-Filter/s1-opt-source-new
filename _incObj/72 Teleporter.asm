@@ -67,7 +67,7 @@ loc_1670E:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		clr.b	objoff_32(a0)
-		move.b	#sfx_Roll,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Roll,(v_snddriver_ram.v_soundqueue1).w
 
 locret_1675C:
 		rts
@@ -86,7 +86,7 @@ loc_1675E:	; Routine 4
 		bne.s	locret_16796
 		bsr.w	sub_1681C
 		addq.b	#2,obRoutine(a0)
-		move.b	#sfx_Teleport,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Teleport,(v_snddriver_ram.v_soundqueue1).w
 
 locret_16796:
 		rts

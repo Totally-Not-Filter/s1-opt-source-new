@@ -62,7 +62,7 @@ loc_BDBE:
 loc_BDC8:
 		tst.b	(a3)
 		bne.s	loc_BDD6
-		move.b	#sfx_Switch,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Switch,(v_snddriver_ram.v_soundqueue1).w
 
 loc_BDD6:
 		bset	d3,(a3)

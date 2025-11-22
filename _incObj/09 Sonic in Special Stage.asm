@@ -225,7 +225,7 @@ Obj09_Jump:
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		bset	#1,obStatus(a0)
-		move.b	#sfx_Jump,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Jump,(v_snddriver_ram.v_soundqueue1).w
 
 Obj09_NoJump:
 		rts
@@ -477,7 +477,7 @@ Obj09_GetCont:
 		bset	#0,(v_lifecount).w
 		bne.s	Obj09_NoCont
 		addq.b	#1,(v_continues).w ; add 1 to number of continues
-		move.b	#sfx_Continue,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Continue,(v_snddriver_ram.v_soundqueue1).w
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -495,7 +495,7 @@ Obj09_Chk1Up:
 Obj09_Get1Up:
 		addq.b	#1,(v_lives).w	; add 1 to number of lives
 		addq.b	#1,(f_lifecount).w ; update the lives counter
-		move.b	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w
 		moveq	#0,d4
 		rts
 ; ===========================================================================
@@ -521,7 +521,7 @@ Obj09_GetEmer:
 		addq.b	#1,(v_emeralds).w ; add 1 to number of emeralds
 
 Obj09_NoEmer:
-		move.b	#bgm_Emerald,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Emerald,(v_snddriver_ram.v_soundqueue0).w
 		moveq	#0,d4
 		rts
 ; ===========================================================================
@@ -621,7 +621,7 @@ Obj09_ChkBumper:
 		move.l	d0,4(a2)
 
 Obj09_BumpSnd:
-		move.b	#sfx_Bumper,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Bumper,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -629,7 +629,7 @@ Obj09_GOAL:
 		cmpi.b	#$27,d0		; is the item a "GOAL"?
 		bne.s	Obj09_UPblock
 		addq.b	#2,obRoutine(a0) ; run routine "Obj09_ExitStage"
-		move.b	#sfx_SSGoal,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSGoal,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -647,7 +647,7 @@ Obj09_UPblock:
 		move.b	#$2A,(a1)	; change item to a "DOWN" block
 
 Obj09_UPsnd:
-		move.b	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -665,7 +665,7 @@ Obj09_DOWNblock:
 		move.b	#$29,(a1)	; change item to an "UP" block
 
 Obj09_DOWNsnd:
-		move.b	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -684,7 +684,7 @@ Obj09_Rblock:
 
 Obj09_RevStage:
 		neg.w	(v_ssrotate).w	; reverse stage rotation
-		move.b	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSItem,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -715,7 +715,7 @@ Obj09_GlassUpdate:
 		move.b	d0,4(a2)	; update the stage layout
 
 Obj09_GlassSnd:
-		move.b	#sfx_SSGlass,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSGlass,(v_snddriver_ram.v_soundqueue1).w
 
 Obj09_NoGlass:
 		rts

@@ -42,7 +42,7 @@ ptr_PLC_FZBoss:		dc.w PLC_FZBoss-ArtLoadCues
 
 plcm:	macro gfx,vram
 	dc.l gfx
-	dc.w (vram)*$20
+	dc.w (vram)*tile_size
 	endm
 
 ; ---------------------------------------------------------------------------

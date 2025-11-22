@@ -125,7 +125,7 @@ PSwapper_MainX:
 	if debugbuild
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
-		move.b	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 	endif
 .locret:
 		rts
@@ -167,7 +167,7 @@ PSwapper_MainX_Alt:
 	if debugbuild
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
-		move.b	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 	endif
 .locret:
 		rts
@@ -222,7 +222,7 @@ PSwapper_MainY:
 	if debugbuild
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
-		move.b	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 	endif
 .locret:
 		rts
@@ -264,7 +264,7 @@ PSwapper_MainY_Alt:
 	if debugbuild
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
-		move.b	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 	endif
 .locret:
 		rts

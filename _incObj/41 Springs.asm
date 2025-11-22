@@ -85,7 +85,7 @@ Spring_BounceUp:
 		move.b	#2,obRoutine(a1)
 		bclr	#3,obStatus(a0)
 		clr.b	obSolid(a0)
-		move.b	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
 
 Spring_AniUp:	; Routine 4
 		lea	Ani_Spring(pc),a1
@@ -134,7 +134,7 @@ Spring_Flipped:
 loc_DC56:
 		bclr	#5,obStatus(a0)
 		bclr	#5,obStatus(a1)
-		move.b	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
 
 Spring_AniLR:	; Routine $A
 		lea	Ani_Spring(pc),a1
@@ -177,7 +177,7 @@ Spring_BounceDwn:
 		move.b	#2,obRoutine(a1)
 		bclr	#3,obStatus(a0)
 		clr.b	obSolid(a0)
-		move.b	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
 
 Spring_AniDwn:	; Routine $10
 		lea	Ani_Spring(pc),a1

@@ -166,54 +166,6 @@ incdac:	macro NAME, PATH
 	NAME_End:	label *
 	endm
 
-; ------------------------------------------------------------------------------
-; Macro to stop Z80 and take over its bus
-; ------------------------------------------------------------------------------
-
-MPCM_stopZ80:	macro OPBUSREQ
-	if ARGCOUNT==1
-		move.w	#$100, OPBUSREQ
-		.wait:
-			bset	#0, OPBUSREQ
-			bne.s	.wait
-	else
-		move.w	#$100, MPCM_Z80_BUSREQ
-		.wait:
-			bset	#0, MPCM_Z80_BUSREQ
-			bne.s	.wait
-	endif
-	endm
-
-; ------------------------------------------------------------------------------
-; Macro to start Z80 and release its bus
-; ------------------------------------------------------------------------------
-
-MPCM_startZ80:	macro OPBUSREQ
-	if ARGCOUNT==1
-		move.w	#0, OPBUSREQ
-	else
-		move.w	#0, MPCM_Z80_BUSREQ
-	endif
-	endm
-
-; ------------------------------------------------------------------------------
-; Ensures Mega PCM 2 isn't busy writing to YM (other than DAC output obviously)
-; ------------------------------------------------------------------------------
-
-MPCM_ensureYMWriteReady:	macro OPBUSREQ
-	.chk_ready:
-		tst.b	(MPCM_Z80_RAM+Z_MPCM_DriverReady).l
-		bne.s	.ready
-		MPCM_startZ80	OPBUSREQ
-		move.w	d0, -(sp)
-		moveq	#10, d0
-		dbf		d0, *						; waste 100+ cycles
-		move.w	(sp)+, d0
-		MPCM_stopZ80	OPBUSREQ
-		bra.s	.chk_ready
-	.ready:
-	endm
-
 ; ==============================================================================
 ; ------------------------------------------------------------------------------
 ; Mega PCM library blob

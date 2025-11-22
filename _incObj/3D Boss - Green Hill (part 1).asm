@@ -96,7 +96,7 @@ loc_177E6:
 		tst.b	objoff_3E(a0)
 		bne.s	BGHZ_ShipFlash
 		move.b	#$20,objoff_3E(a0)	; set number of times for ship to flash
-		move.b	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
 
 BGHZ_ShipFlash:
 		lea	(v_palette+$22).w,a1 ; load 2nd palette, 2nd entry

@@ -13,10 +13,8 @@ DeformLayers:
 
 	.bgscroll:
 		moveq	#0,d0
-		move.w	d0,(v_fg_scroll_flags).w
-		move.w	d0,(v_bg1_scroll_flags).w
-		move.w	d0,(v_bg2_scroll_flags).w
-		move.w	d0,(v_bg3_scroll_flags).w
+		move.l	d0,(v_fg_scroll_flags).w	; and v_bg1_scroll_flags
+		move.l	d0,(v_bg2_scroll_flags).w	; and v_bg3_scroll_flags
 		bsr.w	ScrollHoriz
 		bsr.w	ScrollVertical
 		bsr.w	DynamicLevelEvents
@@ -693,7 +691,29 @@ ScrollHoriz:
 
 
 MoveScreenHoriz:
+		move.b	(Horiz_scroll_delay_val).w,d1	; should scrolling be delayed?
+		beq.s	.scrollNotDelayed				; if not, branch
+		add.b	d1,d1
+		add.b	d1,d1		; multiply by 4, the size of a position buffer entry
+		subq.b	#1,(Horiz_scroll_delay_val).w	; reduce delay value
+		move.b	(Sonic_Pos_Record_Index+1).w,d0
+		sub.b	(Horiz_scroll_delay_val+1).w,d0
+		cmp.b	d0,d1
+		blo.s	.doNotCap
+		move.b	d0,d1
+.doNotCap:
+		move.w	(Sonic_Pos_Record_Index).w,d0	; get current position buffer index
+		sub.b	d1,d0
+		lea	(v_tracksonic).w,a0
+		move.w	(a0,d0.w),d0	; get Sonic's position a certain number of frames ago
+		andi.w	#$3FFF,d0
+		bra.s	.checkIfShouldScroll	; use that value for scrolling
+; ===========================================================================
+; loc_D72E:
+.scrollNotDelayed:
 		move.w	(v_player+obX).w,d0
+; loc_D732:
+.checkIfShouldScroll:
 		sub.w	(v_screenposx).w,d0 ; Sonic's distance from left edge of screen
 		subi.w	#144,d0		; is distance less than 144px?
 		bmi.s	SH_BehindMid	; if yes, branch
@@ -733,7 +753,12 @@ SH_Behind16:
 		cmp.w	(v_limitleft2).w,d0
 		bgt.s	SH_SetScreen
 		move.w	(v_limitleft2).w,d0
-		bra.s	SH_SetScreen
+		move.w	d0,d1
+		sub.w	(v_screenposx).w,d1
+		asl.w	#8,d1
+		move.w	d0,(v_screenposx).w ; set new screen position
+		move.w	d1,(v_scrshiftx).w ; set distance for screen movement
+		rts
 ; End of function MoveScreenHoriz
 
 ; ---------------------------------------------------------------------------

@@ -192,7 +192,7 @@ loc_B872:
 		bne.s	loc_B892
 		tst.b	obRender(a0)
 		bpl.s	loc_B892
-		move.b	#sfx_ChainRise,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_ChainRise,(v_snddriver_ram.v_soundqueue1).w
 
 loc_B892:
 		subi.w	#$80,objoff_32(a0)
@@ -217,7 +217,7 @@ loc_B8A8:
 		move.w	#0,obVelY(a0)	; stop object falling
 		tst.b	obRender(a0)
 		bpl.s	CStom_Restart
-		move.b	#sfx_ChainStomp,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_ChainStomp,(v_snddriver_ram.v_soundqueue1).w
 
 CStom_Restart:
 		moveq	#0,d0
@@ -242,7 +242,7 @@ loc_B902:
 		bne.s	loc_B91C
 		tst.b	obRender(a0)
 		bpl.s	loc_B91C
-		move.b	#sfx_ChainRise,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_ChainRise,(v_snddriver_ram.v_soundqueue1).w
 
 loc_B91C:
 		subi.w	#$80,objoff_32(a0)
@@ -268,7 +268,7 @@ loc_B938:
 		move.w	#$3C,objoff_38(a0)
 		tst.b	obRender(a0)
 		bpl.s	loc_B97C
-		move.b	#sfx_ChainStomp,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_ChainStomp,(v_snddriver_ram.v_soundqueue1).w
 
 loc_B97C:
 		bra.w	CStom_Restart

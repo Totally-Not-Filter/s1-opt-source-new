@@ -1,5 +1,3 @@
-	include "s1.sounddriver.ram.asm"
-
 ; sign-extends a 32-bit integer to 64-bit
 ; all RAM addresses are run through this function to allow them to work in both 16-bit and 32-bit addressing modes
 ramaddr function x,(-(x&$80000000)<<1)|x
@@ -91,7 +89,8 @@ v_ttlsonichide	= v_objspace+object_size*4	; object variable space for hiding par
 
 ; Level objects
 v_player	= v_objspace+object_size*0	; object variable space for Sonic ($40 bytes)
-v_hud		= v_objspace+object_size*1	; object variable space for the HUD ($40 bytes)
+v_spindust		= v_objspace+object_size*1	; object variable space for the HUD ($40 bytes)
+v_splash	= v_spindust	; object variable space for the water splash ($40 bytes)
 
 v_titlecard	= v_objspace+object_size*2	; object variable space for the title card ($100 bytes)
 v_ttlcardname	= v_titlecard+object_size*0		; object variable space for the title card zone name text ($40 bytes)
@@ -108,7 +107,6 @@ v_starsobj2	= v_objspace+object_size*9	; object variable space for the invincibi
 v_starsobj3	= v_objspace+object_size*10	; object variable space for the invincibility stars #3 ($40 bytes)
 v_starsobj4	= v_objspace+object_size*11	; object variable space for the invincibility stars #4 ($40 bytes)
 
-v_splash	= v_objspace+object_size*12	; object variable space for the water splash ($40 bytes)
 v_sonicbubbles	= v_objspace+object_size*13	; object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
 v_watersurface1	= v_objspace+object_size*30	; object variable space for the water surface #1 ($40 bytes)
 v_watersurface2	= v_objspace+object_size*31	; object variable space for the water surface #1 ($40 bytes)
@@ -152,7 +150,7 @@ v_tryagain	= v_objspace+object_size*3	; object variable space for the "TRY AGAIN
 v_eggmanchaos	= v_objspace+object_size*32	; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
 v_snddriver_ram:	SMPS_RAM		; sound driver state
-			ds.b	$40		; unused
+			ds.b	$600-SMPS_RAM.len		; unused
 
 v_gamemode:		ds.l	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
@@ -160,7 +158,8 @@ v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held
 v_jpadpress1:		ds.b	1		; joypad input - pressed
 v_pre_level:		ds.b	1
-			ds.b	3		; unused
+			ds.b	1		; unused
+Sonic_Look_delay_counter:	ds.w	1
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
 			ds.b	6		; unused
 v_generictimer:		ds.w	1		; generic timer, decrements to 0 in vblank (word)
@@ -222,7 +221,12 @@ v_limittop2:		ds.w	1		; top level boundary
 v_limitbtm2:		ds.w	1		; bottom level boundary
 v_unused11:		ds.w	1		; unused
 v_limitleft3:		ds.w	1		; left level boundary, at the end of an act
-			ds.b	6		; unused
+
+Camera_Delay:
+Horiz_scroll_delay_val:		ds.w	1	; if its value is a, where a != 0, X scrolling will be based on the player's X position a-1 frames ago
+Sonic_Pos_Record_Index:		ds.w	1	; into Sonic_Pos_Record_Buf and Sonic_Stat_Record_Buf
+Camera_Delay_End:
+			ds.b	2		; unused
 v_scrshiftx:		ds.w	1		; x-screen shift (new - last) * $100
 v_scrshifty:		ds.w	1		; y-screen shift (new - last) * $100
 v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down
@@ -251,9 +255,9 @@ v_bg2_scroll_flags:	ds.w	1		; screen redraw flags for background 2
 v_bg3_scroll_flags:	ds.w	1		; screen redraw flags for background 3
 f_bgscrollvert:		ds.b	1		; flag for vertical background scrolling
 			ds.b	3		; unused
-v_sonspeedmax:		ds.w	1		; Sonic's maximum speed
-v_sonspeedacc:		ds.w	1		; Sonic's acceleration
 v_sonspeeddec:		ds.w	1		; Sonic's deceleration
+v_sonspeedacc:		ds.w	1		; Sonic's acceleration
+v_sonspeedmax:		ds.w	1		; Sonic's maximum speed
 v_sonframenum:		ds.b	1		; frame to display for Sonic
 f_sonframechg:		ds.b	1		; flag set to update Sonic's sprite frame
 v_anglebuffer:		ds.b	1		; angle of collision block that Sonic or object is standing on

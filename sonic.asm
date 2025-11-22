@@ -26,6 +26,7 @@ zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions s
 
 	include	"Equates.asm"
 	include "MacroSetup.asm"
+	include "sound/Sonic-2-Clone-Driver-v2/Definitions.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
 	include	"Macros.asm"
@@ -336,6 +337,10 @@ GameInit:
 			illegal
 		endif
 .SampleTableOk:
+		btst	#6,v_megadrive.w ; is Megadrive PAL?
+		beq.s	.notPAL		; if not, branch
+		bset	#f_pal,(Clone_Driver_RAM+SMPS_RAM.bitfield1).w
+.notPAL:
 		bsr.w	VDPSetupGame
 		stopZ80
 		waitZ80
@@ -383,9 +388,8 @@ VBlank:
 		jsr	(a0)
 
 VBla_Music:
-		jsr	UpdateMusic.l
-
 VBla_Exit:
+		SMPS_UpdateSoundDriver
 		movem.l	(sp)+,d0-a6
 		addq.l	#1,v_vbla_count.w
 		rte
@@ -423,7 +427,7 @@ VBla_00:
 
 .waterbelow:
 		move.w	v_hbla_hreg.w,(a5)
-		jsr	UpdateMusic.l
+		SMPS_UpdateSoundDriver
 		movem.l	(sp)+,d0-a6
 		addq.l	#1,v_vbla_count.w
 		rte
@@ -906,7 +910,6 @@ BuildDrawObject:
 		add.w	d4,d4
 		adda.w	(a1,d4.w),a1	; get mappings frame address
 		move.w	(a1)+,d4	; number of sprite pieces
-		subq.w	#1,d4
 		bmi.s	BuildSprites_NextObj
 
 BuildDrawFrame:
@@ -986,7 +989,6 @@ Build_1AEE4:
 		lea	(a2),a1
 		adda.w	(a1,d4.w),a1
 		move.w	(a1)+,d4
-		subq.w	#1,d4
 		bmi.s	Build_1AF1C
 		move.w	d6,d3
 		bsr.w	sub_1B070
@@ -1018,7 +1020,6 @@ Build_1AF46:
 		lea	(a2),a1
 		adda.w	(a1,d4.w),a1
 		move.w	(a1)+,d4
-		subq.w	#1,d4
 		bmi.s	Build_1AF62
 		move.w	d6,-(sp)
 		bsr.w	sub_1B070
@@ -1408,7 +1409,7 @@ Tilemap_Cell:
 
 ; LoadPLC:
 AddPLC:
-		lea	(ArtLoadCues).l,a6
+		lea	ArtLoadCues.l,a6
 		add.w	d0,d0
 		adda.w	(a6,d0.w),a6		; jump to relevant PLC
 		move.w	(a6)+,d6	; get length of PLC
@@ -1439,7 +1440,7 @@ AddPLC:
 
 ; LoadPLC2:
 NewPLC:
-		lea	(ArtLoadCues).l,a6
+		lea	ArtLoadCues.l,a6
 		add.w	d0,d0
 		adda.w	(a6,d0.w),a6		; jump to relevant PLC
 		clearRAM KosPlus_decomp_stored_registers,KosPlus_module_end
@@ -1861,102 +1862,6 @@ WhiteOut_AddColour:
 		rts
 ; End of function WhiteOut_AddColour
 
-; ---------------------------------------------------------------------------
-; Palette cycling routine - Sega logo
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
-
-PalCycle_Sega:
-		tst.b	(v_pcyc_time+1).w
-		bne.s	loc_206A
-		lea	(v_palette+$20).w,a1
-		lea	Pal_Sega1(pc),a0
-		moveq	#5,d1
-		move.w	(v_pcyc_num).w,d0
-
-loc_2020:
-		bpl.s	loc_202A
-		addq.w	#2,a0
-		subq.w	#1,d1
-		addq.w	#2,d0
-		bra.s	loc_2020
-; ===========================================================================
-
-loc_202A:
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_2034
-		addq.w	#2,d0
-
-loc_2034:
-		cmpi.w	#$60,d0
-		bhs.s	loc_203E
-		move.w	(a0)+,(a1,d0.w)
-
-loc_203E:
-		addq.w	#2,d0
-		dbf	d1,loc_202A
-
-		move.w	(v_pcyc_num).w,d0
-		addq.w	#2,d0
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_2054
-		addq.w	#2,d0
-
-loc_2054:
-		cmpi.w	#$64,d0
-		blt.s	loc_2062
-		move.w	#$401,(v_pcyc_time).w
-		moveq	#-$C,d0
-
-loc_2062:
-		move.w	d0,(v_pcyc_num).w
-		moveq	#1,d0
-		rts
-; ===========================================================================
-
-loc_206A:
-		subq.b	#1,(v_pcyc_time).w
-		bpl.s	loc_20BC
-		move.b	#4,(v_pcyc_time).w
-		move.w	(v_pcyc_num).w,d0
-		addi.w	#$C,d0
-		cmpi.w	#$30,d0
-		blo.s	loc_2088
-		moveq	#0,d0
-		rts
-; ===========================================================================
-
-loc_2088:
-		move.w	d0,(v_pcyc_num).w
-		lea	Pal_Sega2(pc,d0.w),a0
-		lea	(v_palette+$04).w,a1
-		move.l	(a0)+,(a1)+
-		move.l	(a0)+,(a1)+
-		move.w	(a0)+,(a1)
-		lea	(v_palette+$20).w,a1
-		moveq	#0,d0
-		moveq	#$2C,d1
-
-loc_20A8:
-		move.w	d0,d2
-		andi.w	#$1E,d2
-		bne.s	loc_20B2
-		addq.w	#2,d0
-
-loc_20B2:
-		move.w	(a0),(a1,d0.w)
-		addq.w	#2,d0
-		dbf	d1,loc_20A8
-
-loc_20BC:
-		moveq	#1,d0
-		rts
-; End of function PalCycle_Sega
-
 ; ===========================================================================
 
 Pal_Sega1:	binclude	"palette/Sega1.bin"
@@ -2110,15 +2015,15 @@ WaitForVBla:
 ; ---------------------------------------------------------------------------
 
 GM_Sega:
-		move.b	#bgm_Stop,v_snddriver_ram.v_soundqueue0.w
+		move.w	#bgm_Stop,v_snddriver_ram.v_soundqueue0
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
 		lea	vdp_control_port,a6
 		move.w	#$8004,(a6)	; use 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8700,(a6)	; set background colour (palette entry 0)
-		move.w	#$8B00,(a6)	; full-screen vertical scrolling
+		move.w	#$8710,(a6)	; set background colour (palette line 1, entry 0)
+		move.w	#$8B03,(a6)	; full-screen vertical scrolling
 		clr.b	f_wtr_state.w
 		disable_ints
 		move.w	v_vdp_buffer1.w,d0
@@ -2141,19 +2046,34 @@ GM_Sega:
 
 		lea	Eni_SegaLogo.l,a0 ; load Sega logo mappings
 		lea	v_128x128.l,a1
-		moveq	#make_art_tile(ArtTile_Sega_Tiles,0,FALSE),d0
+		move.w	#make_art_tile(ArtTile_Sega_Tiles,1,TRUE),d0
 		bsr.w	EniDec
 
-		copyTilemap	v_128x128,vram_bg+$510,24,8
-		copyTilemap	v_128x128+24*8*2,vram_fg,40,28
+		copyTilemap	v_128x128,vram_fg,40,28
 
 		tst.b	v_megadrive.w	; is console Japanese?
 		bmi.s	.loadpal
-		copyTilemap	v_128x128+$A40,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
+		copyTilemap	v_128x128+$8C0,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
 
 .loadpal:
+		lea	Eni_SegaBlock.l,a0 ; load Sega logo mappings
+		lea	v_128x128.l,a1
+		move.w	#make_art_tile(ArtTile_Sega_Tiles,1,FALSE),d0
+		bsr.w	EniDec
+
+		copyTilemap	v_128x128,vram_bg+$510,24,8
+
 		moveq	#palid_SegaBG,d0
-		bsr.w	PalLoad	; load Sega logo palette
+		bsr.w	PalLoad_Fade	; load Sega logo palette
+		lea	(v_palette_fading+32).w,a0
+		move.l	#$0EEE0EEE,d0
+		moveq	#(32*3)/4-1,d1
+.loadpal2:
+		move.l	d0,(a0)+
+		dbf	d1,.loadpal2
+
+		bsr.w	PaletteFadeIn
+
 		move.l	#SegaPaletteSprite,v_player.w
 		move.w	v_vdp_buffer1.w,d0
 		ori.b	#$40,d0
@@ -2166,23 +2086,24 @@ Sega_WaitPal:
 		jsr	(BuildSprites).w
 		btst	#bitStart,v_jpadpress1.w
 		bne.s	Sega_WaitEnd
-;		bsr.w	PalCycle_Sega
-;		bne.s	Sega_WaitPal
+		tst.l	v_player.w
+		bne.s	Sega_WaitPal
 
-		moveq	#signextendB($8C),d0
+		move.l	#$0EEC0EEA,(v_palette_fading+32+4).w
+		move.l	#$0EE40EC0,(v_palette_fading+32+8).w
+		move.l	#$0EA00E00,(v_palette_fading+32+12).w
+		bsr.w	PaletteWhiteIn
+		moveq	#signextendB(dSega),d0
 		jsr	MegaPCM_PlaySample
-;		move.w	#60*2+30,v_generictimer.w
+		move.w	#60*2,v_generictimer.w
 
 .wait:
 		move.w	#VBla_14,v_vbla_routine.w
 		bsr.w	WaitForVBla
-		jsr	(ExecuteObjects).w
-		jsr	(BuildSprites).w
 		btst	#bitStart,v_jpadpress1.w
 		bne.s	Sega_WaitEnd
-;		tst.w	v_generictimer.w
-;		bne.s	.wait
-		bra.s	.wait
+		tst.w	v_generictimer.w
+		bne.s	.wait
 
 Sega_WaitEnd:
 		jsr	MegaPCM_StopPlayback
@@ -2190,6 +2111,8 @@ Sega_WaitEnd:
 		rts
 
 		include	"_incObj/Sega Palette Sprite.asm"
+SegaPaletteMap:
+		include	"_maps/Sega Sprite.asm"
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -2197,7 +2120,7 @@ Sega_WaitEnd:
 ; ---------------------------------------------------------------------------
 
 GM_Title:
-		move.b	#bgm_Stop,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Stop,v_snddriver_ram.v_soundqueue0
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
 		disable_ints
@@ -2317,7 +2240,7 @@ Tit_LoadText:
 
 		moveq	#palid_Title,d0	; load title screen palette
 		bsr.w	PalLoad_Fade
-		move.b	#bgm_Title,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Title,v_snddriver_ram.v_soundqueue0
 	if debugbuild
 		clr.b	(f_debugmode).w ; disable debug mode
 	endif
@@ -2429,7 +2352,7 @@ LevelSelect:
 
 LevSel_NoCheat:
 LevSel_PlaySnd:
-		move.b	d0,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d0,v_snddriver_ram.v_soundqueue0
 		bra.s	LevelSelect
 ; ===========================================================================
 
@@ -2441,7 +2364,7 @@ LevSel_Ending:
 
 LevSel_Credits:
 		move.l	#GM_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
-		move.b	#bgm_Credits,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Credits,v_snddriver_ram.v_soundqueue0
 		clr.w	(v_creditsnum).w
 		rts
 ; ===========================================================================
@@ -2485,7 +2408,7 @@ PlayLevel:
 		if Revision<>0
 			move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
 		endif
-		move.b	#bgm_Fade,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Fade,v_snddriver_ram.v_soundqueue0
 		rts
 	if debugbuild
 ; ===========================================================================
@@ -2569,7 +2492,7 @@ loc_33E4:
 	endif
 		tst.w	v_generictimer.w
 		bne.s	loc_33B6
-		move.b	#bgm_Fade,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Fade,v_snddriver_ram.v_soundqueue0
 		move.w	(v_demonum).w,d0 ; load demo number
 		andi.w	#7,d0
 		add.w	d0,d0
@@ -2863,7 +2786,7 @@ GM_Level:
 		st.b	v_pre_level.w
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
-		move.b	#bgm_Fade,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Fade,v_snddriver_ram.v_soundqueue0
 
 Level_NoMusicFade:
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
@@ -2949,7 +2872,7 @@ Level_GetBgm:
 		lsr.w	#6,d0
 		lea	MusicList(pc),a1 ; load music playlist
 		move.b	(a1,d0.w),d0
-		move.b	d0,(v_snddriver_ram.v_soundqueue0).w
+		move.w	d0,v_snddriver_ram.v_soundqueue0
 		move.l	#TitleCard,(v_titlecard).w ; load title card object
 
 Level_TtlCardLoop:
@@ -2977,6 +2900,7 @@ Level_SkipTtlCard:
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
 		move.l	#SonicPlayer,(v_player).w ; load Sonic object
+		move.l	#Splash,(v_spindust).w ; load spin dust object
 		tst.w	(f_demo).w
 		bmi.s	Level_ChkDebug
 		st.b	(f_hud).w ; load HUD object
@@ -3345,7 +3269,7 @@ Demo_SS:	binclude	"demodata/Intro - Special Stage.bin"
 ; ---------------------------------------------------------------------------
 
 GM_Special:
-		move.b	#sfx_EnterSS,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_EnterSS,v_snddriver_ram.v_soundqueue1
 		bsr.w	PaletteWhiteOut
 		disable_ints
 		lea	(vdp_control_port).l,a6
@@ -3388,7 +3312,7 @@ GM_Special:
 		moveq	#0,d0
 		move.w	d0,(v_ssangle).w	; set stage angle to "upright"
 		move.w	#$40,(v_ssrotate).w ; set stage rotation speed
-		move.b	#bgm_SS,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_SS,v_snddriver_ram.v_soundqueue0
 		move.w	d0,(v_btnpushtime1).w
 		lea	Demo_SS(pc),a1
 		move.b	1(a1),(v_btnpushtime2).w
@@ -3487,7 +3411,7 @@ loc_47D4:
 		move.w	(v_rings).w,d0
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,(v_ringbonus).w ; set rings bonus
-		move.b	#bgm_GotThrough,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_GotThrough,v_snddriver_ram.v_soundqueue0
 
 		clearRAM v_objspace
 
@@ -3505,7 +3429,7 @@ SS_NormalExit:
 		beq.s	SS_NormalExit
 		tst.w	(KosPlus_modules_left).w
 		bne.s	SS_NormalExit
-		move.b	#sfx_EnterSS,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_EnterSS,v_snddriver_ram.v_soundqueue1
 		bra.w	PaletteWhiteOut
 ; ===========================================================================
 
@@ -3897,7 +3821,7 @@ GM_Continue:
 		jsr	(ContScrCounter).l	; run countdown (start from 10)
 		moveq	#palid_Continue,d0
 		bsr.w	PalLoad_Fade	; load continue screen palette
-		move.b	#bgm_Continue,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Continue,v_snddriver_ram.v_soundqueue0
 		move.w	#659,v_generictimer.w ; set time delay to 11 seconds
 		moveq	#0,d0
 		move.l	d0,(v_screenposx).w
@@ -3968,7 +3892,7 @@ Map_ContScr:	include	"_maps/Continue Screen.asm"
 ; ---------------------------------------------------------------------------
 
 GM_Ending:
-		move.b	#bgm_Stop,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Stop,v_snddriver_ram.v_soundqueue0
 		bsr.w	PaletteFadeOut
 
 		clearRAM v_objspace
@@ -4021,7 +3945,7 @@ End_LoadData:
 		bsr.w	KosPlusDec
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade	; load Sonic's palette
-		move.b	#bgm_Ending,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Ending,v_snddriver_ram.v_soundqueue0
 	if debugbuild
 		btst	#bitA,(v_jpadhold1).w ; is button A pressed?
 		beq.s	End_LoadSonic	; if not, branch
@@ -4085,7 +4009,7 @@ End_MainLoop:
 		beq.s	End_ChkEmerald	; if yes, branch
 
 		move.l	#GM_Credits,(v_gamemode).w ; goto credits
-		move.b	#bgm_Credits,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Credits,v_snddriver_ram.v_soundqueue0
 		clr.w	(v_creditsnum).w ; set credits index number to 0
 		rts
 ; ===========================================================================
@@ -4794,7 +4718,7 @@ loc_8486:
 		bset	#5,obRender(a0)
 		_move.l	obID(a0),d4
 		move.b	obRender(a0),d5
-		move.b	#sfx_Collapse,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Collapse,v_snddriver_ram.v_soundqueue1
 		movea.l	a0,a1
 		bra.s	loc_84B2
 ; ===========================================================================
@@ -5481,7 +5405,7 @@ ResumeMusic:
 		moveq	#bgm_Boss,d0
 
 .playselected:
-		move.b	d0,(v_snddriver_ram.v_soundqueue0).w
+		move.w	d0,v_snddriver_ram.v_soundqueue0
 
 .over12:
 		move.w	#30,(v_air).w	; reset air to 30 seconds
@@ -5496,11 +5420,24 @@ Map_Drown:	include	"_maps/Drowning Countdown.asm"
 
 		include	"_incObj/38 Shield and Invincibility.asm"
 		include	"_incObj/03 Collision Switcher.asm"
-		include	"_incObj/08 Water Splash.asm"
+		include	"_incObj/08.asm"
 		include	"_anim/Shield and Invincibility.asm"
 Map_Shield:	include	"_maps/Shield and Invincibility.asm"
-		include	"_anim/Water Splash.asm"
+; ===========================================================================
+; animation script
+; off_1DF38:
+Ani_obj08:
+	dc.w Obj08Ani_Null-Ani_obj08	; 0
+	dc.w Obj08Ani_Splash-Ani_obj08	; 1
+	dc.w Obj08Ani_Dash-Ani_obj08	; 2
+	dc.w Obj08Ani_Skid-Ani_obj08	; 3
+Obj08Ani_Null:	dc.b $1F,  0,$FF
+Obj08Ani_Splash:dc.b   3,  1,  2,  3,  4,  5,  6,  7,  8,  9,$FD,  0
+Obj08Ani_Dash:	dc.b   1, $A, $B, $C, $D, $E, $F,$10,$FF
+Obj08Ani_Skid:	dc.b   3,$11,$12,$13,$14,$FC
+	even
 Map_Splash:	include	"_maps/Water Splash.asm"
+Obj08_MapRUnc_1E074:	include	"_maps/obj08 DPLC.asm"
 
 		include	"_incObj/Sonic AnglePos.asm"
 
@@ -6493,7 +6430,7 @@ SS_AniEmeraldSparks:
 		clr.l	(a0)
 		clr.l	4(a0)
 		move.b	#4,(v_player+obRoutine).w
-		move.b	#sfx_SSGoal,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SSGoal,v_snddriver_ram.v_soundqueue1
 
 locret_1B60C:
 		rts
@@ -6673,7 +6610,7 @@ AddPoints:
 		bmi.s	.noextralife ; branch if Mega Drive is Japanese
 		addq.b	#1,(v_lives).w ; give extra life
 		addq.b	#1,(f_lifecount).w
-		move.b	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_ExtraLife,v_snddriver_ram.v_soundqueue0
 
 .noextralife:
 		rts
@@ -6751,6 +6688,8 @@ Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers o
 KosPM_SegaLogo:	binclude	"artkospm/Sega Logo.kospm" ; large Sega logo
 		even
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
+		even
+Eni_SegaBlock:	binclude	"tilemaps/Sega Block.eni" ; large Sega logo (mappings)
 		even
 Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
@@ -7178,7 +7117,8 @@ Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
 		even
 Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		even
-
+ArtUnc_SplashAndDust:	binclude	"artunc/Splash and skid dust.bin"
+		even
 ; ---------------------------------------------------------------------------
 ; Level	layout index
 ; ---------------------------------------------------------------------------
@@ -7430,19 +7370,13 @@ RingPos_SBZ1:	binclude	"ringpos/sbz1_INDIVIDUAL.bin"
 RingPos_SBZ2:	binclude	"ringpos/sbz2_INDIVIDUAL.bin"
 RingPos_SBZ3:	binclude	"ringpos/sbz3_INDIVIDUAL.bin"
 
-		include	"sound/MegaPCM.asm"
-		include	"sound/SampleTable.asm"
-
-SoundDriver:	include "s1.sounddriver.asm"
-
-; end of 'ROM'
-		even
+	include "sound/Sonic-2-Clone-Driver-v2/engine/Sonic 2 Clone Driver v2.asm"
 
 ; ==============================================================
 ; --------------------------------------------------------------
 ; Debugging modules
 ; --------------------------------------------------------------
-
+	even
 	include	"errorhandler\ErrorHandler.asm"
 
 ; --------------------------------------------------------------

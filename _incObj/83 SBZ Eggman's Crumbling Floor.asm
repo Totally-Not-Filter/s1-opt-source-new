@@ -150,7 +150,7 @@ loc_19CC4:
 		dbf	d1,FFloor_LoopFrag ; repeat sequence 3 more times
 
 FFloor_BreakSnd:
-		move.b	#sfx_WallSmash,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_WallSmash,(v_snddriver_ram.v_soundqueue1).w
 		jmp	(DisplaySprite).w
 ; ===========================================================================
 FFloor_FragSpeed:dc.w $80, 0

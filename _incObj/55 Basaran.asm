@@ -91,7 +91,7 @@ Bas_Action:	; Routine 2
 		moveq	#$F,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	.nosound
-		move.b	#sfx_Basaran,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Basaran,(v_snddriver_ram.v_soundqueue1).w
 
 .nosound:
 		jsr	(SpeedToPos).w

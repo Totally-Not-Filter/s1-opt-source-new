@@ -114,7 +114,7 @@ Smash_Solid:	; Routine 2
 		dbf	d1,.loop
 
 .playsnd:
-		move.b	d6,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d6,(v_snddriver_ram.v_soundqueue1).w
 
 Smash_FragMove:	; Routine 4
 		jsr	(SpeedToPos).w

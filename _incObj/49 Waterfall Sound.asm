@@ -20,7 +20,7 @@ WSnd_PlaySnd:	; Routine 2
 		moveq	#$3F,d0
 		and.b	(v_vbla_byte).w,d0 ; get low byte of VBlank counter
 		bne.s	WSnd_ChkDel
-		move.b	#sfx_Waterfall,(v_snddriver_ram.v_soundqueue2).w
+		move.w	#sfx_Waterfall,(v_snddriver_ram.v_soundqueue2).w
 
 WSnd_ChkDel:
 		out_of_range.s	.delete

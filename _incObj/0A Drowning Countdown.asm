@@ -202,7 +202,7 @@ Drown_Countdown:; Routine $A
 		bhi.s	.reduceair	; if air is above 12, branch
 
 		bne.s	.skipmusic	; if air is less than 12, branch
-		move.b	#bgm_Drowning,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Drowning,(v_snddriver_ram.v_soundqueue0).w
 
 .skipmusic:
 		subq.b	#1,objoff_36(a0)
@@ -213,7 +213,7 @@ Drown_Countdown:; Routine $A
 ; ===========================================================================
 
 .warnsound:
-		move.b	#sfx_Warning,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Warning,(v_snddriver_ram.v_soundqueue1).w
 
 .reduceair:
 		subq.w	#1,(v_air).w	; subtract 1 from air remaining
@@ -222,7 +222,7 @@ Drown_Countdown:; Routine $A
 		; Sonic drowns here
 		bsr.w	ResumeMusic
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
-		move.b	#sfx_Drown,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Drown,(v_snddriver_ram.v_soundqueue1).w
 		move.b	#$A,objoff_38(a0)
 		move.w	#1,objoff_3A(a0)
 		move.w	#$78,objoff_30(a0)

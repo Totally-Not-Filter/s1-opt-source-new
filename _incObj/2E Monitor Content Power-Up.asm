@@ -66,7 +66,7 @@ Pow_ChkSonic:
 ExtraLife:
 		addq.b	#1,(v_lives).w	; add 1 to the number of lives you have
 		addq.b	#1,(f_lifecount).w ; update the lives counter
-		move.b	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w
 		rts
 ; ===========================================================================
 
@@ -76,14 +76,14 @@ Pow_ChkShoes:
 		move.w	#$C00,(v_sonspeedmax).w ; change Sonic's top speed
 		move.w	#$18,(v_sonspeedacc).w	; change Sonic's acceleration
 		move.w	#$80,(v_sonspeeddec).w	; change Sonic's deceleration
-		move.b	#bgm_Speedup,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Speedup,(v_snddriver_ram.v_soundqueue0).w
 		rts
 ; ===========================================================================
 
 Pow_ChkShield:
 		move.b	#1,(v_shield).w	; give Sonic a shield
 		move.l	#ShieldItem,(v_shieldobj).w ; load shield object ($38)
-		move.b	#sfx_Shield,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Shield,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -104,7 +104,7 @@ Pow_ChkInvinc:
 			cmpi.w	#$C,(v_air).w
 			bls.s	Pow_NoMusic
 		endif
-		move.b	#bgm_Invincible,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Invincible,(v_snddriver_ram.v_soundqueue0).w
 
 Pow_NoMusic:
 		rts
@@ -123,7 +123,7 @@ Pow_ChkRings:
 		beq.w	ExtraLife
 
 Pow_RingSound:
-		move.b	#sfx_Ring,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Ring,(v_snddriver_ram.v_soundqueue1).w
 
 Pow_ChkS:
 Pow_ChkEnd:

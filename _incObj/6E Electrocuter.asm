@@ -34,7 +34,7 @@ Elec_Shock:	; Routine 2
 		move.b	#1,obAnim(a0)	; run "zap" animation
 		tst.b	obRender(a0)
 		bpl.s	.animate
-		move.b	#sfx_Electric,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Electric,(v_snddriver_ram.v_soundqueue1).w
 
 .animate:
 		lea	Ani_Elec(pc),a1

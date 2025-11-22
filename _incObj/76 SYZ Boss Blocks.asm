@@ -138,7 +138,7 @@ loc_197AA:
 		dbf	d1,BossBlock_LoopFrag ; repeat sequence 3 more times
 
 loc_197D4:
-		move.b	#sfx_WallSmash,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_WallSmash,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; End of function BossBlock_Break
 

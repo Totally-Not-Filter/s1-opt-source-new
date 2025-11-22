@@ -110,7 +110,7 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 		dbf	d1,.loop
 
 .playsnd:
-		move.b	d6,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d6,(v_snddriver_ram.v_soundqueue1).w
 		bsr.w	FindFreeObj
 		bne.s	Smab_Points
 		_move.l	#Points,obID(a1) ; load points object

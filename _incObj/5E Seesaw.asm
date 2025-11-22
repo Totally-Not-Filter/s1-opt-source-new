@@ -255,7 +255,8 @@ See_Spring:
 		clr.b	objoff_3C(a2)
 		move.b	#id_Spring,obAnim(a2) ; change Sonic's animation to "spring" ($10)
 		move.b	#2,obRoutine(a2)
-		move.b	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
+		clr.b	spindash_flag(a2)
+		move.w	#sfx_Spring,(v_snddriver_ram.v_soundqueue1).w
 
 loc_1192C:
 		clr.w	obVelX(a0)

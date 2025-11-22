@@ -73,11 +73,11 @@ CollectRing:
 .got100:
 		addq.b	#1,(v_lives).w	; add 1 to the number of lives you have
 		addq.b	#1,(f_lifecount).w ; update the lives counter
-		move.b	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w ; play extra life music
+		move.w	#bgm_ExtraLife,(v_snddriver_ram.v_soundqueue0).w ; play extra life music
 		rts
 
 .playsnd:
-		move.b	d0,(v_snddriver_ram.v_soundqueue1).w
+		move.w	d0,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; End of function CollectRing
 
@@ -160,7 +160,7 @@ RLoss_Count:	; Routine 0
 		move.w	d0,(v_rings).w	; reset number of rings to zero
 		st.b	(f_ringcount).w ; update ring counter
 		move.b	d0,(v_lifecount).w
-		move.b	#sfx_RingLoss,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_RingLoss,(v_snddriver_ram.v_soundqueue1).w
 
 RLoss_Bounce:	; Routine 2
 		move.b	(v_ani3_frame).w,obFrame(a0)

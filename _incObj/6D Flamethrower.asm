@@ -42,7 +42,7 @@ Flame_Action:	; Routine 2
 		bchg	#0,obAnim(a0)
 		beq.s	loc_E57A
 		move.w	objoff_32(a0),objoff_30(a0)	; begin flaming time
-		move.b	#sfx_Flamethrower,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Flamethrower,(v_snddriver_ram.v_soundqueue1).w
 
 loc_E57A:
 		lea	Ani_Flame(pc),a1

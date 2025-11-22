@@ -39,7 +39,7 @@ Sign_Touch:	; Routine 2
 		bcs.s	.notouch
 		cmpi.w	#$20,d0		; is Sonic within $20 pixels of the signpost?
 		bhs.s	.notouch	; if not, branch
-		move.b	#sfx_Signpost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Signpost,(v_snddriver_ram.v_soundqueue1).w
 		clr.b	(f_timecount).w	; stop time counter
 		move.w	(v_limitright2).w,(v_limitleft2).w ; lock screen position
 		addq.b	#2,obRoutine(a0)
@@ -154,7 +154,7 @@ GotThroughAct:
 		move.w	(v_rings).w,d0	; load number of rings
 		mulu.w	#10,d0		; multiply by 10
 		move.w	d0,(v_ringbonus).w ; set ring bonus
-		move.b	#bgm_GotThrough,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_GotThrough,(v_snddriver_ram.v_soundqueue0).w
 
 locret_ECEE:
 		rts

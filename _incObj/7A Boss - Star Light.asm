@@ -126,7 +126,7 @@ loc_189FE:
 		tst.b	objoff_3E(a0)
 		bne.s	loc_18A28
 		move.b	#$20,objoff_3E(a0)
-		move.b	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
 
 loc_18A28:
 		lea	(v_palette+$22).w,a1
@@ -302,7 +302,7 @@ loc_18BAE:
 
 loc_18BB4:
 		clr.w	obVelY(a0)
-		move.b	#bgm_SLZ,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_SLZ,(v_snddriver_ram.v_soundqueue0).w
 
 loc_18BC2:
 		bra.w	loc_189EE

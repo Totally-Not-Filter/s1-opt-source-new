@@ -143,7 +143,7 @@ Spik_Wait:
 		bpl.s	loc_CFA4	; if result is postitive, branch
 		tst.b	obRender(a0)
 		bpl.s	locret_CFE6
-		move.b	#sfx_SpikesMove,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_SpikesMove,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 

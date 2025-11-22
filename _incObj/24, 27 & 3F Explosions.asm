@@ -32,7 +32,7 @@ ExItem_Main:	; Routine 2
 		move.b	#$C,obActWid(a0)
 		move.b	#7,obTimeFrame(a0) ; set frame duration to 7 frames
 		move.b	#0,obFrame(a0)
-		move.b	#sfx_BreakItem,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_BreakItem,(v_snddriver_ram.v_soundqueue1).w
 
 ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
 		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
@@ -71,5 +71,5 @@ ExBom_Main:	; Routine 0
 		move.b	#$C,obActWid(a0)
 		move.b	#7,obTimeFrame(a0)
 		move.b	#0,obFrame(a0)
-		move.b	#sfx_Bomb,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Bomb,(v_snddriver_ram.v_soundqueue1).w
 		rts

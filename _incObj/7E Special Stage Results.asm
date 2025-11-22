@@ -113,12 +113,12 @@ SSR_RingBonus:	; Routine 6
 		moveq	#3,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	locret_C8EA
-		move.b	#sfx_Switch,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Switch,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
 loc_C8C4:
-		move.b	#sfx_Cash,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Cash,(v_snddriver_ram.v_soundqueue1).w
 		addq.b	#2,obRoutine(a0)
 		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
 		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?

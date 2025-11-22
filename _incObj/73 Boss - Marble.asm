@@ -104,7 +104,7 @@ loc_1833E:
 		tst.b	objoff_3E(a0)
 		bne.s	loc_18374
 		move.b	#$28,objoff_3E(a0)
-		move.b	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
 
 loc_18374:
 		lea	(v_palette+$22).w,a1
@@ -305,7 +305,7 @@ loc_18566:
 
 loc_1856C:
 		clr.w	obVelY(a0)
-		move.b	#bgm_MZ,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_MZ,(v_snddriver_ram.v_soundqueue0).w
 
 loc_1857A:
 		bsr.w	BossMove

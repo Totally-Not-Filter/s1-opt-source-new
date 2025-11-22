@@ -109,7 +109,7 @@ loc_179DA:
 
 loc_179E0:
 		clr.w	obVelY(a0)
-		move.b	#bgm_GHZ,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_GHZ,(v_snddriver_ram.v_soundqueue0).w
 
 loc_179EE:
 		bsr.w	BossMove
@@ -216,8 +216,8 @@ BGHZ_Display:
 		move.b	obStatus(a1),obStatus(a0)
 		lea	(Ani_Eggman).l,a1
 		jsr	(AnimateSprite).w
-		move.b	obStatus(a0),d0
-		andi.b	#3,d0
+		moveq	#3,d0
+		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).w

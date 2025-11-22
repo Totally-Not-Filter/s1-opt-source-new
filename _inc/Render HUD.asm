@@ -31,7 +31,6 @@ BuildHUD:
 		add.w	d4,d4
 		adda.w	(a1,d4.w),a1
 		move.w	(a1)+,d4
-		subq.w	#1,d4
 		bmi.s	+
 		bra.w	BuildSpr_Normal	; draw frame
 +

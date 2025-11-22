@@ -98,7 +98,7 @@ loc_17F48:
 		tst.b	objoff_3E(a0)
 		bne.s	loc_17F70
 		move.b	#$20,objoff_3E(a0)
-		move.b	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_HitBoss,(v_snddriver_ram.v_soundqueue1).w
 
 loc_17F70:
 		lea	(v_palette+$22).w,a1
@@ -271,7 +271,7 @@ loc_180F6:
 		move.b	#$32,objoff_3C(a0)
 
 loc_18112:
-		move.b	#bgm_LZ,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_LZ,(v_snddriver_ram.v_soundqueue0).w
 		if Revision<>0
 			clr.b	(f_lockscreen).w
 		endif

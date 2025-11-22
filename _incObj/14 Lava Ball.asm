@@ -50,7 +50,7 @@ LBall_Main:	; Routine 0
 		clr.w	obVelY(a0)	; delete vertical speed
 
 .sound:
-		move.b	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
 
 LBall_Action:	; Routine 2
 		moveq	#0,d0

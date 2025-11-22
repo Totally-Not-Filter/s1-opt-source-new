@@ -334,7 +334,7 @@ loc_C294:
 		add.w	d0,obX(a1)
 		move.w	d1,obInertia(a1)
 		move.w	#0,obVelX(a1)
-		move.b	#sfx_Push,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Push,(v_snddriver_ram.v_soundqueue1).w
 		tst.b	obSubtype(a0)
 		bmi.s	locret_C2E4
 		move.w	d0,-(sp)

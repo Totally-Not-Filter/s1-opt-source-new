@@ -55,7 +55,7 @@ GRing_Collect:	; Routine 4
 		bset	#0,obRender(a1)	; reverse flash object
 
 GRing_PlaySnd:
-		move.b	#sfx_GiantRing,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_GiantRing,(v_snddriver_ram.v_soundqueue1).w
 		bra.s	GRing_Animate
 ; ===========================================================================
 

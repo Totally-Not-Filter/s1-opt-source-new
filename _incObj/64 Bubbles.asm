@@ -80,7 +80,7 @@ Bub_ChkWater:	; Routine 4
 		beq.s	.display	; if not, branch
 
 		bsr.w	ResumeMusic	; cancel countdown music
-		move.b	#sfx_Bubble,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Bubble,(v_snddriver_ram.v_soundqueue1).w
 		lea	(v_player).w,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)

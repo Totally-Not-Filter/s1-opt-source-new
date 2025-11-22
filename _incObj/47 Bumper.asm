@@ -42,7 +42,7 @@ Bump_Hit:	; Routine 2
 		bclr	#5,obStatus(a1)
 		clr.b	objoff_3C(a1)
 		move.b	#1,obAnim(a0)	; use "hit" animation
-		move.b	#sfx_Bumper,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Bumper,(v_snddriver_ram.v_soundqueue1).w
 		move.w	obRespawnNo(a0),d0
 		beq.s	.addscore
 		movea.w	d0,a2

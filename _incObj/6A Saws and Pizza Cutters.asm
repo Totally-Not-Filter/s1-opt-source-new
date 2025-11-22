@@ -74,7 +74,7 @@ Saw_Action:	; Routine 2
 		move.w	(v_framecount).w,d0
 		andi.w	#$F,d0
 		bne.s	.nosound01
-		move.b	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
 
 .nosound01:
 		rts
@@ -103,7 +103,7 @@ Saw_Action:	; Routine 2
 		move.b	(v_oscillate+6).w,d0
 		cmpi.b	#$18,d0
 		bne.s	.nosound02
-		move.b	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
 
 .nosound02:
 		rts
@@ -129,7 +129,7 @@ Saw_Action:	; Routine 2
 		move.w	#$600,obVelX(a0) ; move object to the right
 		move.b	#$A2,obColType(a0)
 		move.b	#2,obFrame(a0)
-		move.b	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
 
 .nosaw03x:
 		addq.l	#4,sp
@@ -168,7 +168,7 @@ Saw_Action:	; Routine 2
 		move.w	#-$600,obVelX(a0) ; move object to the left
 		move.b	#$A2,obColType(a0)
 		move.b	#2,obFrame(a0)
-		move.b	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Saw,(v_snddriver_ram.v_soundqueue1).w
 
 .nosaw04x:
 		addq.l	#4,sp

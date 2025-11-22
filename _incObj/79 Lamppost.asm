@@ -86,7 +86,7 @@ Lamp_Blue:	; Routine 2
 		cmpi.w	#$68,d0
 		bhs.s	.return
 
-		move.b	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 		addq.b	#2,obRoutine(a0)
 		jsr	(FindFreeObj).l
 		bne.s	.fail

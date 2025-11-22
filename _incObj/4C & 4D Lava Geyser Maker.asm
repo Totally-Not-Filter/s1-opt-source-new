@@ -183,7 +183,7 @@ Geyser_Main:	; Routine 0
 		move.b	#0,obSubtype(a0)
 
 .sound:
-		move.b	#sfx_Burning,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Burning,(v_snddriver_ram.v_soundqueue1).w
 
 Geyser_Action:	; Routine 2
 		moveq	#0,d0

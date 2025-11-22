@@ -68,11 +68,11 @@ Gar_FireBall:	; Routine 4
 		neg.w	obVelX(a0)
 
 .noflip:
-		move.b	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Fireball,(v_snddriver_ram.v_soundqueue1).w
 
 Gar_AniFire:	; Routine 6
-		move.b	(v_framebyte).w,d0
-		andi.b	#7,d0
+		moveq	#7,d0
+		and.b	(v_framebyte).w,d0
 		bne.s	.nochg
 		bchg	#0,obFrame(a0)	; change every 8 frames
 

@@ -16,7 +16,7 @@ __LABEL__ label *
 	elseif SonicMappingsVer=2
 	dc.w ((__LABEL___End - __LABEL___Begin) / 8)
 	else
-	dc.w ((__LABEL___End - __LABEL___Begin) / 6)
+	dc.w ((__LABEL___End - __LABEL___Begin) / 6)-1
 	endif
 __LABEL___Begin label *
     endm
@@ -61,7 +61,7 @@ spritePiece2P macro xpos,ypos,width,height,tile,xflip,yflip,pal,pri,tile2,xflip2
 
 dplcHeader macro {INTLABEL}
 __LABEL__ label *
-	dc.w ((__LABEL___End - __LABEL___Begin) / 6)
+	dc.w ((__LABEL___End - __LABEL___Begin) / 6)-1
 __LABEL___Begin label *
     endm
 

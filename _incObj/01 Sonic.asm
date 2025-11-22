@@ -124,7 +124,7 @@ Sonic_Display:
 		lsr.w	#6,d0
 		lea	(MusicList).w,a1
 		move.b	(a1,d0.w),d0
-		move.b	d0,(v_snddriver_ram.v_soundqueue0).w	; play normal music
+		move.w	d0,(v_snddriver_ram.v_soundqueue0).w	; play normal music
 
 .removeinvincible:
 		move.b	#0,(v_invinc).w ; cancel invincibility
@@ -138,7 +138,7 @@ Sonic_Display:
 		move.w	#$C,(v_sonspeedacc).w ; restore Sonic's acceleration
 		move.w	#$80,(v_sonspeeddec).w ; restore Sonic's deceleration
 		move.b	#0,(v_shoes).w	; cancel speed shoes
-		move.b	#bgm_Slowdown,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_Slowdown,(v_snddriver_ram.v_soundqueue0).w
 
 .exit:
 		rts
@@ -194,8 +194,8 @@ Sonic_Water:
 		asr	obVelY(a0)
 		asr	obVelY(a0)	; slow Sonic
 		beq.s	.exit		; branch if Sonic stops moving
-		move.l	#Splash,(v_splash).w ; load splash object
-		move.b	#sfx_Splash,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#(1<<8)|(0<<0),(v_splash+anim).w	; splash animation
+		move.w	#sfx_Splash,(v_snddriver_ram.v_soundqueue1).w
 		rts
 ; ===========================================================================
 
@@ -218,13 +218,13 @@ Sonic_Water:
 .splash:
 		tst.w	obVelY(a0)
 		beq.s	.exit2
-		move.l	#Splash,(v_splash).w ; load splash object
+		move.w	#(1<<8)|(0<<0),(v_splash+anim).w	; splash animation
 		cmpi.w	#-$1000,obVelY(a0)
 		bgt.s	.belowmaxspeed
 		move.w	#-$1000,obVelY(a0) ; set maximum speed on leaving water
 
 .belowmaxspeed:
-		move.b	#sfx_Splash,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Splash,(v_snddriver_ram.v_soundqueue1).w
 
 .exit2:
 		rts
@@ -237,6 +237,7 @@ Sonic_Water:
 
 ; Obj01_MdNormal:
 Sonic_MdNormal:
+		bsr.w	Sonic_CheckSpindash
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_SlopeResist
 		bsr.w	Sonic_Move
@@ -279,9 +280,10 @@ Sonic_MdRoll:
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
 Sonic_Move:
-		move.w	(v_sonspeedmax).w,d6
-		move.w	(v_sonspeedacc).w,d5
-		move.w	(v_sonspeeddec).w,d4
+;		move.w	(v_sonspeeddec).w,d4
+;		move.w	(v_sonspeedacc).w,d5
+;		move.w	(v_sonspeedmax).w,d6
+		movem.w	(v_sonspeeddec).w,d4-d6	; and v_sonspeedacc, and v_sonspeedmax
 		tst.b	(f_slidemode).w
 		bne.w	loc_12FEE
 		tst.w	objoff_3E(a0)
@@ -351,6 +353,10 @@ Sonic_LookUp:
 		btst	#bitUp,(v_jpadhold2).w ; is up being pressed?
 		beq.s	Sonic_Duck	; if not, branch
 		move.b	#id_LookUp,obAnim(a0) ; use "looking up" animation
+		addq.w	#1,(Sonic_Look_delay_counter).w
+		cmpi.w	#$78,(Sonic_Look_delay_counter).w
+		blo.s	Sonic_ResetScr2
+		move.w	#$78,(Sonic_Look_delay_counter).w
 		cmpi.w	#$C8,(v_lookshift).w
 		beq.s	loc_12FC2
 		addq.w	#2,(v_lookshift).w
@@ -361,6 +367,10 @@ Sonic_Duck:
 		btst	#bitDn,(v_jpadhold2).w ; is down being pressed?
 		beq.s	Sonic_ResetScr	; if not, branch
 		move.b	#id_Duck,obAnim(a0) ; use "ducking" animation
+		addq.w	#1,(Sonic_Look_delay_counter).w
+		cmpi.w	#$78,(Sonic_Look_delay_counter).w
+		blo.s	Sonic_ResetScr2
+		move.w	#$78,(Sonic_Look_delay_counter).w
 		cmpi.w	#8,(v_lookshift).w
 		beq.s	loc_12FC2
 		subq.w	#2,(v_lookshift).w
@@ -369,6 +379,9 @@ Sonic_Duck:
 
 ; Obj01_ResetScr
 Sonic_ResetScr:
+		clr.w	(Sonic_Look_delay_counter).w
+
+Sonic_ResetScr2:
 		cmpi.w	#$60,(v_lookshift).w ; is screen in its default position?
 		beq.s	loc_12FC2	; if yes, branch
 		bcc.s	loc_12FBE
@@ -507,7 +520,11 @@ loc_130BA:
 		blt.s	locret_130E8
 		move.b	#id_Stop,obAnim(a0) ; use "stopping" animation
 		bclr	#0,obStatus(a0)
-		move.b	#sfx_Skid,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Skid,(v_snddriver_ram.v_soundqueue1).w
+		cmpi.w	#12,(v_air).w
+		blo.s	locret_130E8	; if he's drowning, branch to not make dust
+		move.b	#6,(v_spindust+routine).w
+		move.b	#$15,(v_spindust+mapping_frame).w
 
 locret_130E8:
 		rts
@@ -555,7 +572,11 @@ loc_13120:
 		bgt.s	locret_1314E
 		move.b	#id_Stop,obAnim(a0) ; use "stopping" animation
 		bset	#0,obStatus(a0)
-		move.b	#sfx_Skid,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Skid,(v_snddriver_ram.v_soundqueue1).w
+		cmpi.w	#12,(v_air).w
+		blo.s	locret_1314E	; if he's drowning, branch to not make dust
+		move.b	#6,(v_spindust+routine).w
+		move.b	#$15,(v_spindust+mapping_frame).w
 
 locret_1314E:
 		rts
@@ -569,12 +590,10 @@ locret_1314E:
 
 
 Sonic_RollSpeed:
-		move.w	(v_sonspeedmax).w,d6
-		add.w	d6,d6
-		move.w	(v_sonspeedacc).w,d5
-		asr.w	#1,d5
-		move.w	(v_sonspeeddec).w,d4
+		movem.w	(v_sonspeeddec).w,d4-d6	; and v_sonspeedacc, and v_sonspeedmax
 		asr.w	#2,d4
+		asr.w	#1,d5
+		add.w	d6,d6
 		tst.b	(f_slidemode).w
 		bne.w	loc_131CC
 		tst.w	objoff_3E(a0)
@@ -705,8 +724,7 @@ loc_13242:
 
 ; Sonic_ChgJumpDir
 Sonic_JumpDirection:
-		move.w	(v_sonspeedmax).w,d6
-		move.w	(v_sonspeedacc).w,d5
+		movem.w	(v_sonspeedacc).w,d5-d6	; and v_sonspeedmax
 		add.w	d5,d5
 		move.w	obVelX(a0),d0
 		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
@@ -879,7 +897,7 @@ Sonic_ChkRoll:
 		move.b	#7,obWidth(a0)
 		move.b	#id_Roll,obAnim(a0) ; use "rolling" animation
 		addq.w	#5,obY(a0)
-		move.b	#sfx_Roll,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Roll,(v_snddriver_ram.v_soundqueue1).w
 		tst.w	obInertia(a0)
 		bne.s	.ismoving
 		move.w	#$200,obInertia(a0) ; set inertia if 0
@@ -924,9 +942,9 @@ Sonic_Jump:
 		bset	#1,obStatus(a0)	; set in-air flag.
 		bclr	#5,obStatus(a0)	; clear pushing flag.
 		addq.l	#4,sp	; Run in-air subroutines when we return.
-		move.b	#1,objoff_3C(a0)	; set jump flag.
+		st.b	jumpflag(a0)	; set jump flag.
 		clr.b	stick_to_convex(a0)
-		move.b	#sfx_Jump,(v_snddriver_ram.v_soundqueue1).w
+		move.w	#sfx_Jump,(v_snddriver_ram.v_soundqueue1).w
 		btst	#2,obStatus(a0)	; is Sonic already in a ball state?
 		bne.s	.return	; if so, branch.
 		move.b	#$E,obHeight(a0)	; set Sonic's hitbox to ball size.
@@ -947,7 +965,7 @@ Sonic_Jump:
 
 
 Sonic_JumpHeight:
-		tst.b	objoff_3C(a0)	; has Sonic jumped?
+		tst.b	jumpflag(a0)	; has Sonic jumped?
 		beq.s	.capyvel		; if not, just cap Y speed normally.
 		move.w	#-$400,d1		; set max jump height.
 		btst	#6,obStatus(a0)	; is Sonic underwater?
@@ -973,6 +991,126 @@ Sonic_JumpHeight:
 .return2:
 		rts
 ; End of function Sonic_JumpHeight
+
+; ---------------------------------------------------------------------------
+; Subroutine to check for starting to charge a spindash
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+; loc_1AC3E:
+Sonic_CheckSpindash:
+		tst.b	spindash_flag(a0)
+		bne.s	Sonic_UpdateSpindash
+		cmpi.b	#id_Duck,obAnim(a0)
+		bne.s	return_1AC8C
+		moveq	#btnABC,d0
+		and.b	(v_jpadpress2).w,d0
+		beq.s	return_1AC8C
+		move.b	#id_Warp1,obAnim(a0)
+		move.w	#sfx_Spindash,(v_snddriver_ram.v_soundqueue1).w
+		addq.l	#4,sp
+		st.b	spindash_flag(a0)
+		clr.w	spindash_counter(a0)
+		cmpi.w	#12,(v_air).w	; if he's drowning, branch to not make dust
+		blo.s	+
+		move.b	#2,(v_spindust+obAnim).w
++
+		bsr.w	Sonic_LevelBound
+		bra.w	Sonic_AnglePos
+
+return_1AC8C:
+		rts
+; End of subroutine Sonic_CheckSpindash
+
+
+; ---------------------------------------------------------------------------
+; Subrouting to update an already-charging spindash
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+; loc_1AC8E:
+Sonic_UpdateSpindash:
+		btst	#bitDn,(v_jpadhold2).w
+		bne.w	Sonic_ChargingSpindash
+
+		; unleash the charged spindash and start rolling quickly:
+		move.b	#$E,obHeight(a0)
+		move.b	#7,obWidth(a0)
+		move.b	#id_Roll,obAnim(a0)
+		addq.w	#5,obY(a0)	; add the difference between Sonic's rolling and standing heights
+		moveq	#0,d0
+		move.b	d0,spindash_flag(a0)
+		move.b	spindash_counter(a0),d0
+		add.w	d0,d0
+		move.w	SpindashSpeeds(pc,d0.w),obInertia(a0)
+		; Determine how long to lag the camera for.
+		; Notably, the faster Sonic goes, the less the camera lags.
+		; This is seemingly to prevent Sonic from going off-screen.
+		move.w	obInertia(a0),d0
+		subi.w	#$800,d0 ; $800 is the lowest spin dash speed
+		lsr.w	#7,d0
+		neg.w	d0
+		addi.w	#$20,d0
+		move.b	d0,(Horiz_scroll_delay_val).w
+		; Back up the position array index for later.
+		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
+
+		btst	#0,obStatus(a0)
+		beq.s	+
+		neg.w	obInertia(a0)
++
+		bset	#2,obStatus(a0)
+		clr.b	(v_spindust+obAnim).w
+		move.w	#sfx_Teleport,(v_snddriver_ram.v_soundqueue1).w	; spindash zoom sound
+		bra.s	Obj01_Spindash_ResetScr
+; ===========================================================================
+; word_1AD0C:
+SpindashSpeeds:
+		dc.w  $800	; 0
+		dc.w  $880	; 1
+		dc.w  $900	; 2
+		dc.w  $980	; 3
+		dc.w  $A00	; 4
+		dc.w  $A80	; 5
+		dc.w  $B00	; 6
+		dc.w  $B80	; 7
+		dc.w  $C00	; 8
+; ===========================================================================
+; loc_1AD30:
+Sonic_ChargingSpindash:			; If still charging the dash...
+		tst.w	spindash_counter(a0)
+		beq.s	+
+		move.w	spindash_counter(a0),d0
+		lsr.w	#5,d0
+		sub.w	d0,spindash_counter(a0)
+		bcc.s	+
+		clr.w	spindash_counter(a0)
++
+		moveq	#btnABC,d0
+		and.b	(v_jpadpress2).w,d0
+		beq.s	Obj01_Spindash_ResetScr
+		move.w	#(id_Warp1<<8)|(id_Walk<<0),obAnim(a0)
+		move.w	#sfx_Spindash,(v_snddriver_ram.v_soundqueue1).w
+		addi.w	#$200,spindash_counter(a0)
+		cmpi.w	#$800,spindash_counter(a0)
+		blo.s	Obj01_Spindash_ResetScr
+		move.w	#$800,spindash_counter(a0)
+
+; loc_1AD78:
+Obj01_Spindash_ResetScr:
+		addq.l	#4,sp
+		cmpi.w	#(224/2)-16,(v_lookshift).w
+		beq.s	loc_1AD8C
+		bhs.s	+
+		addq.w	#4,(v_lookshift).w
++		subq.w	#2,(v_lookshift).w
+
+loc_1AD8C:
+		bsr.w	Sonic_LevelBound
+		bra.w	Sonic_AnglePos
+; End of subroutine Sonic_UpdateSpindash
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to slow Sonic walking up a slope
@@ -1051,7 +1189,6 @@ locret_13544:
 
 
 Sonic_SlopeRepel:
-		nop	
 		tst.b	stick_to_convex(a0)
 		bne.s	locret_13580
 		tst.w	objoff_3E(a0)
@@ -1337,7 +1474,7 @@ Sonic_ResetOnFloor:
 		bclr	#1,obStatus(a0)	; clear in-air flag.
 		bclr	#5,obStatus(a0)	; clear push flag.
 		moveq	#0,d0
-		move.b	d0,objoff_3C(a0)	; clear jump flag.
+		move.b	d0,jumpflag(a0)	; clear jump flag.
 		move.w	d0,(v_itembonus).w	; clear enemy score chain.
 		rts
 ; End of function Sonic_ResetOnFloor
@@ -1389,6 +1526,7 @@ Sonic_HurtStop:
 		move.b	#id_Walk,obAnim(a0)
 		subq.b	#2,obRoutine(a0)
 		move.b	#60*2,flashtime(a0)
+		move.b	d0,spindash_flag(a0)
 
 locret_13860:
 		rts
@@ -1411,6 +1549,7 @@ Sonic_Death:	; Routine 6
 
 
 GameOver:
+		clr.b	spindash_flag(a0)
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
@@ -1421,14 +1560,14 @@ GameOver:
 		addq.b	#1,(f_lifecount).w ; update lives counter
 		subq.b	#1,(v_lives).w	; subtract 1 from number of lives
 		bne.s	loc_138D4
-		move.w	#0,objoff_3A(a0)
+		clr.w	objoff_3A(a0)
 		move.l	#GameOverCard,(v_gameovertext1).w ; load GAME object
 		move.l	#GameOverCard,(v_gameovertext2).w ; load OVER object
 		move.b	#1,(v_gameovertext2+obFrame).w ; set OVER object to correct frame
 		clr.b	(f_timeover).w
 
 loc_138C2:
-		move.b	#bgm_GameOver,(v_snddriver_ram.v_soundqueue0).w
+		move.w	#bgm_GameOver,(v_snddriver_ram.v_soundqueue0).w
 		moveq	#plcid_GameOver,d0
 		jmp	(AddPLC).w	; load game over patterns
 ; ===========================================================================
@@ -1437,7 +1576,7 @@ loc_138D4:
 		move.w	#60,objoff_3A(a0)	; set time delay to 1 second
 		tst.b	(f_timeover).w	; is TIME OVER tag set?
 		beq.s	locret_13900	; if not, branch
-		move.w	#0,objoff_3A(a0)
+		clr.w	objoff_3A(a0)
 		move.l	#GameOverCard,(v_gameovertext1).w ; load TIME object
 		move.l	#GameOverCard,(v_gameovertext2).w ; load OVER object
 		move.b	#2,(v_gameovertext1+obFrame).w
@@ -1763,7 +1902,6 @@ Sonic_LoadGfx:
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d5	; read "number of entries" value
-		subq.w	#1,d5
 		bmi.s	.nochange	; if zero, branch
 		move.w	#(ArtTile_Sonic)*tile_size,d4
 		move.l	#dmaSource(Art_Sonic),d6
