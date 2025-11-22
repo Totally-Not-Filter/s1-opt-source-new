@@ -2055,7 +2055,7 @@ GM_Sega:
 		copyTilemap	v_128x128+$8C0,vram_fg+$53A,3,2 ; hide "TM" with a white rectangle
 
 .loadpal:
-		lea	Eni_SegaBlock.l,a0 ; load Sega logo mappings
+		lea	KosP_SegaBlock.l,a0 ; load Sega logo mappings
 		lea	v_128x128.l,a1
 		bsr.w	KosPlusDec
 
@@ -6688,7 +6688,7 @@ KosPM_SegaLogo:	binclude	"artkospm/Sega Logo.kospm" ; large Sega logo
 		even
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 		even
-Eni_SegaBlock:	binclude	"tilemaps/Sega Block.kosp" ; large Sega logo (mappings)
+KosP_SegaBlock:	binclude	"tilemaps/Sega Block.kosp" ; large Sega logo (mappings)
 		even
 Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
