@@ -3405,8 +3405,9 @@ loc_47D4:
 		bsr.w	NewPLC
 		moveq	#plcid_SSResult,d0
 		bsr.w	AddPLC		; load results screen patterns
-		move.b	#1,(f_scorecount).w ; update score counter
-		move.b	#1,(f_endactbonus).w ; update ring bonus counter
+		moveq	#1,d0
+		move.b	d0,(f_scorecount).w ; update score counter
+		move.b	d0,(f_endactbonus).w ; update ring bonus counter
 		move.w	(v_rings).w,d0
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,(v_ringbonus).w ; set rings bonus
@@ -4098,8 +4099,9 @@ End_MoveSon3:
 		addq.b	#2,(v_sonicend).w
 		move.w	#$A0,(v_player+obX).w
 		move.l	#EndSonic,(v_player).w ; load Sonic ending sequence object
-		clr.b	(v_player+obRoutine).w
-		clr.b	(v_player+ob2ndRout).w
+		moveq	#0,d0
+		move.b	d0,(v_player+obRoutine).w
+		move.b	d0,(v_player+ob2ndRout).w
 
 End_MoveSonExit:
 		rts
@@ -4348,7 +4350,7 @@ LevelDataLoad:
 		movea.l	(a2)+,a0
 		lea	(v_128x128).l,a1 ; RAM address for 128x128 mappings
 		bsr.w	KosPlusDec
-		bsr.w	LevelLayoutLoad
+		bsr.s	LevelLayoutLoad
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		bsr.w	PalLoad_Fade	; load palette (based on d0)
@@ -4440,8 +4442,8 @@ loc_74AE:
 		moveq	#0,d0
 		move.b	standonobject(a1),d0
 		mulu.w	#object_size,d0
-		addi.l	#v_objspace,d0
-		movea.l	d0,a2
+		addi.w	#v_objspace,d0
+		movea.w	d0,a2
 		bclr	#3,obStatus(a2)
 		clr.b	ob2ndRout(a2)
 		cmpi.b	#4,obRoutine(a2)
@@ -4623,8 +4625,8 @@ loc_7BCE:
 		moveq	#0,d4
 		move.b	(a2)+,d4
 		mulu.w	#object_size,d4
-		addi.l	#v_objspace,d4
-		movea.l	d4,a1
+		addi.w	#v_objspace,d4
+		movea.w	d4,a1
 		moveq	#0,d4
 		move.b	objoff_3C(a1),d4
 		move.l	d4,d5
@@ -5563,7 +5565,7 @@ Sonic_HitFloor:
 		add.w	d0,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -5577,7 +5579,7 @@ Sonic_HitFloor:
 		sub.w	d0,d3
 		lea	(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor
 		move.w	(sp)+,d0
 		clr.b	d2
@@ -5605,7 +5607,7 @@ loc_14DF0:
 		addi.w	#$A,d2
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor
 		clr.b	d2
 
@@ -6119,9 +6121,8 @@ loc_1B210:
 		adda.w	(a1,d1.w),a1
 		movea.w	(a5)+,a3
 		move.w	(a1)+,d1
-		subq.w	#1,d1
 		bmi.s	loc_1B268
-		jsr	(BuildSpr_Normal).l
+		jsr	(BuildSpr_Normal).w
 
 loc_1B268:
 		addq.w	#4,a4

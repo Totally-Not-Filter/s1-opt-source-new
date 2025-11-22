@@ -7,7 +7,7 @@ SegaPaletteSprite:
 		move.l	#.move,(a0)
 		move.l	#SegaPaletteMap,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sega_Tiles,1,0),obGfx(a0)
-		move.w	#0*$80,obPriority(a0)
+		clr.w	obPriority(a0)
 		move.b	#4,obRender(a0)
 		lea	obX(a0),a2
 		move.w	#32,(a2)
