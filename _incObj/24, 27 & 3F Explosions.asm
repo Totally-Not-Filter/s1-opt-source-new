@@ -15,7 +15,7 @@ ExItem_Index:	dc.w ExItem_Animal-ExItem_Index
 
 ExItem_Animal:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	ExItem_Main
 		_move.l	#Animals,obID(a1) ; load animal object
 		move.w	obX(a0),obX(a1)

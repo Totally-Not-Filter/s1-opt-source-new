@@ -218,7 +218,7 @@ PushB_NoLava:
 ; ===========================================================================
 
 PushB_LoadLava:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	locret_C184
 		_move.l	#GeyserMaker,obID(a1) ; load lava geyser object
 		move.w	obX(a0),obX(a1)

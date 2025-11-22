@@ -23,7 +23,7 @@ BossBlock_Main:	; Routine 0
 ; ===========================================================================
 
 BossBlock_Loop:
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	BossBlock_ExitLoop
 
 BossBlock_MakeBlock:
@@ -112,7 +112,7 @@ BossBlock_Break:
 ; ===========================================================================
 
 BossBlock_LoopFrag:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_197D4
 
 BossBlock_MakeFrag:
@@ -127,8 +127,7 @@ loc_197AA:
 		move.l	(a2)+,(a3)+
 		dbf	d3,loc_197AA
 
-		move.w	(a4)+,obVelX(a1)
-		move.w	(a4)+,obVelY(a1)
+		move.l	(a4)+,obVelX(a1)
 		move.w	(a5)+,d3
 		add.w	d3,obX(a1)
 		move.w	(a5)+,d3

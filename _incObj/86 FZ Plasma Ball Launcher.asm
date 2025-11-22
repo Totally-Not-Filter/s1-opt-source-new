@@ -78,7 +78,7 @@ BossPlasma_MakeBalls:; Routine 4
 		moveq	#3,d2
 
 BossPlasma_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.w	loc_1A954
 		move.l	#BossPlasma,obID(a1)
 		move.w	obX(a0),obX(a1)

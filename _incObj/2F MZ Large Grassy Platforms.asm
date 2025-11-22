@@ -170,7 +170,7 @@ loc_B01C:
 		tst.b	objoff_35(a0)
 		bne.s	loc_B07A
 		move.b	#1,objoff_35(a0)
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_B07A
 		_move.l	#GrassFire,obID(a1) ; load sitting flame object
 		move.w	obX(a0),obX(a1)

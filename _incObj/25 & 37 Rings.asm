@@ -115,7 +115,7 @@ RLoss_Count:	; Routine 0
 ; ===========================================================================
 
 .loop:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.w	.resetcounter
 
 .makerings:

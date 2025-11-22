@@ -823,6 +823,7 @@ Add_SpriteToCollisionResponseList:
 ; End of function Add_SpriteToCollisionResponseList
 
 		include	"_incObj/sub AnimateSprite.asm"
+		include	"_incObj/sub FindFreeObj.asm"
 		include	"_inc/Render Rings.asm"
 		include	"_inc/Render HUD.asm"
 Map_HUD:	include	"_maps/HUD.asm"
@@ -4725,7 +4726,7 @@ loc_8486:
 ; ===========================================================================
 
 loc_84AA:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	loc_84F2
 		addq.w	#6,a3
 
@@ -5250,7 +5251,6 @@ Obj_Index:
 
 		include	"_incObj/sub ChkObjectVisible.asm"
 
-		include	"_incObj/sub FindFreeObj.asm"
 		include	"_incObj/41 Springs.asm"
 		include	"_anim/Springs.asm"
 Map_Spring:	include	"_maps/Springs.asm"
@@ -5934,7 +5934,7 @@ BossDefeated:
 		moveq	#7,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	locret_178A2
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	locret_178A2
 		_move.l	#ExplosionBomb,obID(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)

@@ -46,7 +46,7 @@ See_Main:	; Routine 0
 		tst.b	obSubtype(a0)	; is object type 00 ?
 		bne.s	.noball		; if not, branch
 
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.noball
 		_move.l	#Seesaw,obID(a1) ; load spikeball object
 		addq.b	#6,obRoutine(a1) ; use See_Spikeball routine

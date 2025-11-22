@@ -63,7 +63,7 @@ Bri_Main:	; Routine 0
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 ; sub_F728:
 Obj11_MakeBdgSegment:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	+	; rts
 		move.l	#Bridge,obID(a1) ; load obj11
 		move.w	obX(a0),obX(a1)

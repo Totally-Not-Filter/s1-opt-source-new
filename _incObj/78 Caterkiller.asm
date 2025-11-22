@@ -60,7 +60,7 @@ Cat_Main:	; Routine 0
 		moveq	#2,d1
 
 Cat_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		if Revision=0
 		bne.s	.fail
 		else

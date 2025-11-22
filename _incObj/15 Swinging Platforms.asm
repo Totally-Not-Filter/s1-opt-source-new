@@ -62,9 +62,9 @@ Obj15_Init:
 	andi.w	#$F,d1
 	move.w	x_pos(a0),d2
 	move.w	y_pos(a0),d3
-	bsr.w	FindNextFreeObj
+	jsr	(FindNextFreeObj).w
 	bne.w	+++
-	_move.b	id(a0),id(a1) ; load obj15
+	_move.l	id(a0),id(a1) ; load obj15
 	move.l	mappings(a0),mappings(a1)
 	move.w	art_tile(a0),art_tile(a1)
 	move.b	#4,render_flags(a1)
@@ -329,7 +329,7 @@ Obj15_State4:
 	beq.s	loc_1000C
 	tst.b	(v_oscillate+$18).w
 	bne.s	loc_1000C
-	bsr.w	FindNextFreeObj
+	jsr	(FindNextFreeObj).w
 	bne.s	loc_100E4
 	moveq	#0,d0
 

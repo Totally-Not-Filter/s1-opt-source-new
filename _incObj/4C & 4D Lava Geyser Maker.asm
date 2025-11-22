@@ -52,7 +52,7 @@ GMake_Wait:	; Routine 2
 
 GMake_MakeLava:	; Routine 6
 		addq.b	#2,obRoutine(a0)
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 		_move.l	#LavaGeyser,obID(a1) ; load lavafall object
 		move.w	obX(a0),obX(a1)
@@ -138,7 +138,7 @@ Geyser_Main:	; Routine 0
 ; ===========================================================================
 
 .loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 
 .makelava:

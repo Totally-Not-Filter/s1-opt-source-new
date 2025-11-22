@@ -111,7 +111,7 @@ Obj08_SkidDust:
 	subq.b	#1,obj08_dust_timer(a0)
 	bpl.s	loc_1DEE0
 	move.b	#3,obj08_dust_timer(a0)
-	bsr.w	FindFreeObj
+	jsr	(FindFreeObj).w
 	bne.s	loc_1DEE0
 	_move.l	id(a0),id(a1) ; load obj08
 	move.w	x_pos(a2),x_pos(a1)

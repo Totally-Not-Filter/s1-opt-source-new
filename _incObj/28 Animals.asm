@@ -121,7 +121,7 @@ loc_90C0:
 		move.w	#-$400,obVelY(a0)
 		tst.b	(v_bossstatus).w
 		bne.s	loc_911C
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	Anml_Display
 		_move.l	#Points,obID(a1) ; load points object
 		move.w	obX(a0),obX(a1)

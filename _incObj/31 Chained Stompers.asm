@@ -57,7 +57,7 @@ loc_B6E0:
 ; ===========================================================================
 
 CStom_Loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.w	CStom_SetSize
 
 CStom_MakeStomper:

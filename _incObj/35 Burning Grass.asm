@@ -54,7 +54,7 @@ loc_B238:	; Routine 2
 		addi.l	#$80000,d0
 		andi.l	#$FFFFF,d0
 		bne.s	GFire_Animate
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	GFire_Animate
 		_move.l	#GrassFire,obID(a1)
 		move.w	obX(a0),obX(a1)

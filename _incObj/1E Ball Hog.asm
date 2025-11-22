@@ -54,7 +54,7 @@ Hog_Action:	; Routine 2
 
 .makeball:
 		move.b	#1,hog_launchflag(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Cannonball,obID(a1) ; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)

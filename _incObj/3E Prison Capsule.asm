@@ -107,7 +107,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 		moveq	#7,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	.noexplosion
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	.noexplosion
 		_move.l	#ExplosionBomb,obID(a1) ; load explosion object
 		move.w	obX(a0),obX(a1)
@@ -139,7 +139,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 		moveq	#-$1C,d4
 
 .loop:
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Animals,obID(a1) ; load animal object
 		move.w	obX(a0),obX(a1)
@@ -158,7 +158,7 @@ Pri_Animals:	; Routine $C
 		moveq	#7,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	.noanimal
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	.noanimal
 		_move.l	#Animals,obID(a1) ; load animal object
 		move.w	obX(a0),obX(a1)

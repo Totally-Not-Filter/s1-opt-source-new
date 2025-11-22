@@ -67,8 +67,7 @@ Gird_Action:	; Routine 2
 Gird_ChgMove:
 		move.b	gird_set(a0),d0
 		andi.w	#$18,d0
-		lea	.settings(pc),a1
-		lea	(a1,d0.w),a1
+		lea	.settings(pc,d0.w),a1
 		move.w	(a1)+,obVelX(a0)
 		move.w	(a1)+,obVelY(a0)
 		move.w	(a1)+,gird_time(a0)

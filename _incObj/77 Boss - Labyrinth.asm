@@ -35,7 +35,7 @@ BossLabyrinth_Main:	; Routine 0
 ; ===========================================================================
 
 BossLabyrinth_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	BossLabyrinth_ShipMain
 		_move.l	#BossLabyrinth,obID(a1)
 		move.w	obX(a0),obX(a1)

@@ -8,7 +8,7 @@ BGHZ_MakeBall:
 		move.w	#0,obVelX(a0)
 		move.w	#0,obVelY(a0)
 		addq.b	#2,ob2ndRout(a0)
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_17910
 		_move.l	#BossBall,obID(a1) ; load swinging ball object
 		move.w	objoff_30(a0),obX(a1)

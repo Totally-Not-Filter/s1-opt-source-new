@@ -86,7 +86,7 @@ Moto_ActIndex:	dc.w .move-Moto_ActIndex
 		subq.b	#1,.smokedelay(a0)
 		bpl.s	.nosmoke
 		move.b	#$F,.smokedelay(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.nosmoke
 		_move.l	#MotoBug,obID(a1) ; load exhaust smoke object
 		move.w	obX(a0),obX(a1)

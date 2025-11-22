@@ -141,7 +141,7 @@ Mon_Display:	; Routine 8
 Mon_BreakOpen:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	Mon_Explode
 		_move.l	#PowerUp,obID(a1) ; load monitor contents object
 		move.w	obX(a0),obX(a1)
@@ -149,7 +149,7 @@ Mon_BreakOpen:	; Routine 4
 		move.b	obAnim(a0),obAnim(a1)
 
 Mon_Explode:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#ExplosionItem,obID(a1) ; load explosion object
 		addq.b	#2,obRoutine(a1) ; don't create an animal

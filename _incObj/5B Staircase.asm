@@ -40,7 +40,7 @@ Stair_Main:	; Routine 0
 ; ===========================================================================
 
 .loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 		move.b	#4,obRoutine(a1)
 

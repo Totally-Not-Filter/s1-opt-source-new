@@ -29,7 +29,7 @@ GBall_Main:	; Routine 0
 ; ===========================================================================
 
 GBall_MakeLinks:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	GBall_MakeBall
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -76,8 +76,8 @@ loc_17BC6:
 		moveq	#0,d4
 		move.b	(a2)+,d4
 		mulu.w	#object_size,d4
-		addi.l	#v_objspace,d4
-		movea.l	d4,a1
+		addi.w	#v_objspace,d4
+		movea.w	d4,a1
 		move.b	(a3)+,d0
 		cmp.b	objoff_3C(a1),d0
 		beq.s	loc_17BE0

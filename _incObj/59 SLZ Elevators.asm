@@ -237,7 +237,7 @@ Elev_MakeMulti:	; Routine 6
 		subq.w	#1,elev_dist(a0)
 		bne.s	.chkdel
 		move.w	objoff_3E(a0),elev_dist(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.chkdel
 		_move.l	#Elevator,obID(a1) ; duplicate the object
 		move.w	obX(a0),obX(a1)

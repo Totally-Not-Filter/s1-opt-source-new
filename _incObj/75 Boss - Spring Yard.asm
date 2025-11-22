@@ -36,7 +36,7 @@ BossSpringYard_Main:	; Routine 0
 ; ===========================================================================
 
 BossSpringYard_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	BossSpringYard_ShipMain
 		move.l	#BossSpringYard,obID(a1)
 		move.w	obX(a0),obX(a1)

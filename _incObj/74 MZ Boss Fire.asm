@@ -82,7 +82,7 @@ BossFire_MakeFlame:
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#3,objoff_29(a0)
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_187CA
 		lea	(a1),a3
 		lea	(a0),a2
@@ -106,7 +106,7 @@ loc_187CA:
 
 
 BossFire_Duplicate2:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	locret_187EE
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)

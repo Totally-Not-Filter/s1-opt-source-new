@@ -66,7 +66,7 @@ Sign_Spin:	; Routine 4
 		addq.b	#2,sparkle_id(a0) ; increment sparkle counter
 		andi.b	#$E,sparkle_id(a0)
 		lea	Sign_SparkPos(pc,d0.w),a2 ; load sparkle position data
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Rings,obID(a1)	; load rings object
 		addq.b	#id_Ring_Sparkle,obRoutine(a1) ; jump to ring sparkle subroutine

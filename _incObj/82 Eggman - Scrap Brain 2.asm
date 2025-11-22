@@ -32,7 +32,7 @@ SEgg_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		bset	#7,obRender(a0)
 		move.b	#$20,obActWid(a0)
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	SEgg_Eggman
 		move.l	a0,objoff_34(a1)
 		move.l	#ScrapEggman,obID(a1) ; load switch object

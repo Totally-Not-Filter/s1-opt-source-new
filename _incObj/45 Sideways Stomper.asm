@@ -38,7 +38,7 @@ SStom_Main:	; Routine 0
 		bra.s	.load
 
 .loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 
 .load:
@@ -74,7 +74,7 @@ SStom_Main:	; Routine 0
 
 SStom_Solid:	; Routine 2
 		move.w	obX(a0),-(sp)
-		bsr.w	SStom_Move
+		bsr.s	SStom_Move
 		moveq	#$17,d1
 		moveq	#$20,d2
 		moveq	#$20,d3

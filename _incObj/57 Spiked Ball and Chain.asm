@@ -62,7 +62,7 @@ SBall_Main:	; Routine 0
 		bcs.s	.fail
 
 .makechain:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 		addq.b	#1,sball_childs(a0) ; increment child object counter
 		move.w	a1,d5		; get child object RAM address
@@ -122,8 +122,8 @@ SBall_Move:	; Routine 2
 		moveq	#0,d4
 		move.b	(a2)+,d4
 		mulu.w	#object_size,d4
-		addi.l	#v_objspace,d4
-		movea.l	d4,a1
+		addi.w	#v_objspace,d4
+		movea.w	d4,a1
 		moveq	#0,d4
 		move.b	sball_radius(a1),d4
 		move.l	d4,d5
@@ -153,8 +153,8 @@ SBall_Move:	; Routine 2
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		mulu.w	#object_size,d0
-		addi.l	#v_objspace,d0
-		movea.l	d0,a1
+		addi.w	#v_objspace,d0
+		movea.w	d0,a1
 		jsr	(DeleteChild).w
 		dbf	d2,.deleteloop ; delete all pieces of chain
 

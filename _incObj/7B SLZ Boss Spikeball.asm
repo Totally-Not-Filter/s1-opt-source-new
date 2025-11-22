@@ -327,7 +327,7 @@ BossSpikeball_MakeFrag:
 		lea	BossSpikeball_FragSpeed(pc),a2
 
 BossSpikeball_Loop:
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	loc_1909A
 		move.l	#BossSpikeball,obID(a1) ; load shrapnel object
 		move.b	#$A,obRoutine(a1)

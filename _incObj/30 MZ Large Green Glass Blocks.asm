@@ -44,7 +44,7 @@ Glass_Main:	; Routine 0
 ; ===========================================================================
 
 .Repeat:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.Fail
 
 .Load:

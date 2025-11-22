@@ -53,7 +53,7 @@ Bump_Hit:	; Routine 2
 .addscore:
 		moveq	#1,d0
 		jsr	(AddPoints).l	; add 10 to score
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.display
 		_move.l	#Points,obID(a1) ; load points object
 		move.w	obX(a0),obX(a1)

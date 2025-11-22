@@ -58,7 +58,7 @@ Buzz_Action:	; Routine 2
 ; ===========================================================================
 
 .fire:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Missile,obID(a1) ; load missile object
 		move.w	obX(a0),obX(a1)

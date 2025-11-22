@@ -138,7 +138,7 @@ Newt_Action:	; Routine 2
 		tst.b	objoff_32(a0)
 		bne.s	.fail
 		move.b	#1,objoff_32(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Missile,obID(a1) ; load missile object
 		move.w	obX(a0),obX(a1)

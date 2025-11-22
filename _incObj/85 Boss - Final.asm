@@ -53,7 +53,7 @@ BossFinal_Main:	; Routine 0
 ; ===========================================================================
 
 BossFinal_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_19E20
 
 BossFinal_LoadBoss:
@@ -78,7 +78,7 @@ BossFinal_LoadBoss:
 
 loc_19E20:
 		lea	objoff_36(a0),a2
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	loc_19E5A
 		move.l	#BossPlasma,obID(a1) ; load energy ball object
 		move.w	a1,(a2)
@@ -88,7 +88,7 @@ loc_19E20:
 		moveq	#3,d1
 
 loc_19E3E:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_19E5A
 		move.w	a1,(a2)+
 		move.l	#EggmanCylinder,obID(a1) ; load crushing cylinder object

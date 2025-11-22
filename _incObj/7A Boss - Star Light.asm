@@ -35,7 +35,7 @@ BossStarLight_Main:
 ; ===========================================================================
 
 BossStarLight_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	loc_1895C
 		_move.l	#BossStarLight,obID(a1)
 		move.w	obX(a0),obX(a1)
@@ -230,7 +230,7 @@ loc_18AFA:
 
 		move.l	a0,-(sp)
 		lea	(a2),a0
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		movea.l	(sp)+,a0
 		bne.s	loc_18B40
 		move.l	#BossSpikeball,obID(a1) ; load spiked ball object

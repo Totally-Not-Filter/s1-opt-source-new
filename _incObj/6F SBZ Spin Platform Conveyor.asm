@@ -113,7 +113,7 @@ loc_1639A:
 ; ===========================================================================
 
 SpinC_Loop:
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	loc_163D0
 
 SpinC_LoadPform:

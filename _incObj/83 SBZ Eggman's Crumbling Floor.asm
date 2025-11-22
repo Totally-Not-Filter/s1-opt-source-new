@@ -29,7 +29,7 @@ FFloor_Main:	; Routine 0
 		lea	objoff_30(a0),a2
 
 FFloor_MakeBlock:
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	FFloor_ExitMake
 		move.w	a1,(a2)+
 		move.l	#FalseFloor,obID(a1) ; load block object
@@ -125,7 +125,7 @@ FFloor_Break:
 ; ===========================================================================
 
 FFloor_LoopFrag:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	FFloor_BreakSnd
 
 FFloor_MakeFrag:

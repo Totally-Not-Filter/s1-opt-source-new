@@ -36,7 +36,7 @@ LavaM_MakeLava:	; Routine 2
 		move.b	obDelayAni(a0),obTimeFrame(a0) ; reset time delay
 		bsr.w	ChkObjectVisible
 		bne.s	LavaM_Wait
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	LavaM_Wait
 		_move.l	#LavaBall,obID(a1) ; load lava ball object
 		move.w	obX(a0),obX(a1)

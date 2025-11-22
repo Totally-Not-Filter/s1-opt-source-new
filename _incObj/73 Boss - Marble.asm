@@ -34,7 +34,7 @@ BossMarble_Main:	; Routine 0
 ; ===========================================================================
 
 BossMarble_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr	(FindNextFreeObj).w
 		bne.s	BossMarble_ShipMain
 		_move.l	#BossMarble,obID(a1)
 		move.w	obX(a0),obX(a1)
@@ -176,7 +176,7 @@ loc_183FE:
 BossMarble_MakeLava:
 		subq.b	#1,objoff_34(a0)
 		bcc.s	loc_1845C
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	loc_1844A
 		_move.l	#LavaBall,obID(a1) ; load lava ball object
 		move.w	#boss_mz_y+$D8,obY(a1)	; set Y position
@@ -234,7 +234,7 @@ BossMarble_MakeLava2:
 		clr.w	obVelY(a0)
 		move.w	#$50,objoff_3C(a0)
 		bchg	#0,obStatus(a0)
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	loc_184EA
 		move.w	objoff_30(a0),obX(a1)
 		move.w	objoff_38(a0),obY(a1)

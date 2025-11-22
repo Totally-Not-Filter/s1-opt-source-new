@@ -114,7 +114,7 @@ loc_12460:
 ; ===========================================================================
 
 LCon_Loop:
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	loc_124AA
 
 LCon_MakePtfms:
@@ -135,7 +135,7 @@ loc_124B2:	; Routine 2
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		jsr	(PlatformObject).l
-		bra.w	sub_12502
+		bra.s	sub_12502
 ; ===========================================================================
 
 loc_124C2:	; Routine 4
@@ -143,14 +143,14 @@ loc_124C2:	; Routine 4
 		move.b	obActWid(a0),d1
 		jsr	(ExitPlatform).l
 		move.w	obX(a0),-(sp)
-		bsr.w	sub_12502
+		bsr.s	sub_12502
 		move.w	(sp)+,d2
 		jmp	(MvSonicOnPtfm2).l
 ; ===========================================================================
 
 loc_124DE:	; Routine 6
-		move.w	(v_framecount).w,d0
-		andi.w	#3,d0
+		moveq	#3,d0
+		and.w	(v_framecount).w,d0
 		bne.s	loc_124FC
 		moveq	#1,d1
 		tst.b	(f_conveyrev).w
@@ -205,7 +205,7 @@ loc_12552:
 		movea.l	objoff_3C(a0),a1
 		move.w	(a1,d1.w),objoff_34(a0)
 		move.w	2(a1,d1.w),objoff_36(a0)
-		bsr.w	LCon_ChangeDir
+		bsr.s	LCon_ChangeDir
 
 loc_1256A:
 		jmp	(SpeedToPos).w

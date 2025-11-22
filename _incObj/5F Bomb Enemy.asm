@@ -114,7 +114,7 @@ Bom_Action:	; Routine 2
 		move.w	#143,bom_time(a0) ; set fuse time
 		clr.w	obVelX(a0)
 		move.b	#2,obAnim(a0)	; use activated animation
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.outofrange
 		_move.l	#Bomb,obID(a1)	; load fuse object
 		move.w	obX(a0),obX(a1)
@@ -161,7 +161,7 @@ loc_11B7C:
 ; ===========================================================================
 
 .loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 
 .makeshrapnel:

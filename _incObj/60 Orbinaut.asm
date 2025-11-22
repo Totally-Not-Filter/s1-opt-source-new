@@ -41,7 +41,7 @@ Orb_Main:	; Routine 0
 		moveq	#3,d1
 
 .makesatellites:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 		addq.b	#1,(a3)
 		move.w	a1,d5
@@ -134,8 +134,8 @@ loc_11E40:
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		mulu.w	#object_size,d0
-		addi.l	#v_objspace,d0
-		movea.l	d0,a1
+		addi.w	#v_objspace,d0
+		movea.w	d0,a1
 		jsr	(DeleteChild).w
 		dbf	d2,loc_11E40
 

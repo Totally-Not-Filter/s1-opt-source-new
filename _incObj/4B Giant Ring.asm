@@ -43,7 +43,7 @@ GRing_Animate:	; Routine 2
 GRing_Collect:	; Routine 4
 		subq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	GRing_PlaySnd
 		_move.l	#RingFlash,obID(a1) ; load giant ring flash object
 		move.w	obX(a0),obX(a1)

@@ -25,7 +25,7 @@ LWall_Main:	; Routine 0
 ; ===========================================================================
 
 .loop:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	.fail
 
 .make:

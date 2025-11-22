@@ -158,7 +158,7 @@ Bub_BblMaker:	; Routine $A
 		jsr	(RandomNumber).w
 		andi.w	#$1F,d0
 		move.w	d0,objoff_38(a0)
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Bubble,obID(a1) ; load bubble object
 		move.w	obX(a0),obX(a1)

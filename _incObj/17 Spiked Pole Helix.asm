@@ -42,7 +42,7 @@ Hel_Main:	; Routine 0
 		moveq	#0,d6
 
 Hel_Build:
-		bsr.w	FindNextFreeObj
+		jsr	(FindNextFreeObj).w
 		bne.s	Hel_Action
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
@@ -100,8 +100,8 @@ Hel_DelLoop:
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		mulu.w	#object_size,d0
-		addi.l	#v_objspace,d0
-		movea.l	d0,a1		; get child address
+		addi.w	#v_objspace,d0
+		movea.w	d0,a1		; get child address
 		jsr	(DeleteChild).w	; delete object
 		dbf	d2,Hel_DelLoop ; repeat d2 times (helix length)
 

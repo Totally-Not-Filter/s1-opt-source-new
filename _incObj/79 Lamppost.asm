@@ -88,7 +88,7 @@ Lamp_Blue:	; Routine 2
 
 		move.w	#sfx_Lamppost,(v_snddriver_ram.v_soundqueue1).w
 		addq.b	#2,obRoutine(a0)
-		jsr	(FindFreeObj).l
+		jsr	(FindFreeObj).w
 		bne.s	.fail
 		_move.l	#Lamppost,obID(a1)	; load twirling lamp object
 		move.b	#6,obRoutine(a1) ; goto Lamp_Twirl next

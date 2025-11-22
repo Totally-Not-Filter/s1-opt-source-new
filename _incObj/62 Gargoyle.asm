@@ -37,7 +37,7 @@ Gar_MakeFire:	; Routine 2
 		move.b	obDelayAni(a0),obTimeFrame(a0) ; reset timer
 		bsr.w	ChkObjectVisible
 		bne.s	.nofire
-		bsr.w	FindFreeObj
+		jsr	(FindFreeObj).w
 		bne.s	.nofire
 		_move.l	#Gargoyle,obID(a1) ; load fireball object
 		addq.b	#4,obRoutine(a1) ; use Gar_FireBall routine
