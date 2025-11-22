@@ -1963,7 +1963,6 @@ __LABEL__:	binclude	path
 __LABEL___end:
 	endm
 
-Pal_SegaBG:	bincludePalette	"palette/Sega Background.bin"
 Pal_Title:	bincludePalette	"palette/Title Screen.bin"
 Pal_LevelSel:	bincludePalette	"palette/Level Select.bin"
 Pal_Sonic:	bincludePalette	"palette/Sonic.bin"
@@ -2022,7 +2021,7 @@ GM_Sega:
 		move.w	#$8004,(a6)	; use 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8710,(a6)	; set background colour (palette line 1, entry 0)
+		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
 		move.w	#$8B03,(a6)	; full-screen vertical scrolling
 		clr.b	f_wtr_state.w
 		disable_ints
@@ -2046,7 +2045,7 @@ GM_Sega:
 
 		lea	Eni_SegaLogo.l,a0 ; load Sega logo mappings
 		lea	v_128x128.l,a1
-		move.w	#make_art_tile(ArtTile_Sega_Tiles,1,TRUE),d0
+		move.w	#make_art_tile(ArtTile_Sega_Tiles,0,TRUE),d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128,vram_fg,40,28
@@ -2058,19 +2057,19 @@ GM_Sega:
 .loadpal:
 		lea	Eni_SegaBlock.l,a0 ; load Sega logo mappings
 		lea	v_128x128.l,a1
-		move.w	#make_art_tile(ArtTile_Sega_Tiles,1,FALSE),d0
-		bsr.w	EniDec
+		bsr.w	KosPlusDec
 
 		copyTilemap	v_128x128,vram_bg+$510,24,8
 
-		moveq	#palid_SegaBG,d0
-		bsr.w	PalLoad_Fade	; load Sega logo palette
-		lea	(v_palette_fading+32).w,a0
+		lea	(v_palette_fading).w,a0
 		move.l	#$0EEE0EEE,d0
-		moveq	#(32*3)/4-1,d1
+		moveq	#(32*4)/4-1,d1
 .loadpal2:
 		move.l	d0,(a0)+
 		dbf	d1,.loadpal2
+
+		move.l	#$0EEC0EEA,(v_palette_fading+32+2).w
+		move.l	#$0EE40EC0,(v_palette_fading+32+6).w
 
 		bsr.w	PaletteFadeIn
 
@@ -2089,9 +2088,9 @@ Sega_WaitPal:
 		tst.l	v_player.w
 		bne.s	Sega_WaitPal
 
-		move.l	#$0EEC0EEA,(v_palette_fading+32+4).w
-		move.l	#$0EE40EC0,(v_palette_fading+32+8).w
-		move.l	#$0EA00E00,(v_palette_fading+32+12).w
+		move.l	#$0EEC0EEA,(v_palette_fading+4).w
+		move.l	#$0EE40EC0,(v_palette_fading+8).w
+		move.l	#$0EA00E00,(v_palette_fading+12).w
 		bsr.w	PaletteWhiteIn
 		moveq	#signextendB(dSega),d0
 		jsr	MegaPCM_PlaySample
@@ -6689,7 +6688,7 @@ KosPM_SegaLogo:	binclude	"artkospm/Sega Logo.kospm" ; large Sega logo
 		even
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 		even
-Eni_SegaBlock:	binclude	"tilemaps/Sega Block.eni" ; large Sega logo (mappings)
+Eni_SegaBlock:	binclude	"tilemaps/Sega Block.kosp" ; large Sega logo (mappings)
 		even
 Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
