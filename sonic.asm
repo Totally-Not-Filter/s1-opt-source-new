@@ -313,11 +313,11 @@ CheckSumCheck:
 		st.b	v_init.w ; set flag so checksum won't run again
 
 GameInit:
-		lea	v_ram_start,a6
+		lea	v_crossresetram.w,a6
 		moveq	#0,d7
 		move.w	#bytesToLcnt(v_crossresetram-v_ram_start),d6
 .clearRAM:
-		move.l	d7,(a6)+
+		move.l	d7,-(a6)
 		dbf	d6,.clearRAM	; clear RAM ($0000-$FDFF)
 
 		InitDMAQueue
