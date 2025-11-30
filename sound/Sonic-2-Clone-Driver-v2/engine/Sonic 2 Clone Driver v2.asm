@@ -183,11 +183,9 @@ DACUpdateTrack:
 	bclr	#0,SMPS_Track.PlaybackControl(a5)	; Clear 'new note playing' flag (used by my homebrew Sound Test)
     endif
 	subq.b	#1,SMPS_Track.DurationTimeout(a5)	; Has DAC sample timeout expired?
-	bne.s	.locret					; Return if not
+	bne.s	TempoWait.skipdelay		; Return if not
 	bsr.s	DACDoNext
 	bra.s	DACUpdateSample
-.locret:
-	rts
 ; End of function DACUpdateTrack
 
 

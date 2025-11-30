@@ -1861,9 +1861,6 @@ WhiteOut_AddColour:
 
 ; ===========================================================================
 
-Pal_Sega1:	binclude	"palette/Sega1.bin"
-Pal_Sega2:	binclude	"palette/Sega2.bin"
-
 ; ---------------------------------------------------------------------------
 ; Subroutines to load palettes
 
@@ -4378,7 +4375,7 @@ LevelLayoutLoad:
 		lea	(Level_layout_header).w,a1
 	rept (Level_layout_main_end-Level_layout_header)/4
 		move.l	(a0)+,(a1)+
-	endm
+	endr
 		rts
 ; End of function LevelLayoutLoad2
 
@@ -5634,7 +5631,7 @@ sub_14E50:
 		add.w	d0,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -5648,7 +5645,7 @@ sub_14E50:
 		add.w	d0,d3
 		lea	(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall
 		move.w	(sp)+,d0
 		move.b	#-$40,d2
@@ -5668,7 +5665,7 @@ loc_14EBC:
 		addi.w	#$A,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall
 		move.b	#-$40,d2
 		bra.w	loc_14E0A
@@ -5688,7 +5685,7 @@ ObjHitWallRight:
 		lea	(v_anglebuffer).w,a4
 		clr.b	(a4)
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		moveq	#$D,d5
 		bsr.w	FindWall
 		move.b	(v_anglebuffer).w,d3
@@ -6112,11 +6109,11 @@ loc_1B210:
 		lsl.w	#3,d0
 		lea	(a5,d0.w),a5
 		movea.l	(a5)+,a1
-		move.w	(a5)+,d1
-		add.w	d1,d1
-		adda.w	(a1,d1.w),a1
+		move.w	(a5)+,d4
+		add.w	d4,d4
+		adda.w	(a1,d4.w),a1
 		movea.w	(a5)+,a3
-		move.w	(a1)+,d1
+		move.w	(a1)+,d4
 		bmi.s	loc_1B268
 		jsr	(BuildSpr_Normal).w
 

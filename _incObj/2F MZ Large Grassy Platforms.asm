@@ -175,8 +175,7 @@ loc_B01C:
 		_move.l	#GrassFire,obID(a1) ; load sitting flame object
 		move.w	obX(a0),obX(a1)
 		move.w	lgrass_origY(a0),lgrass_origY(a1)
-		addq.w	#8,lgrass_origY(a1)
-		subq.w	#3,lgrass_origY(a1)
+		addq.w	#5,lgrass_origY(a1)
 		subi.w	#$40,obX(a1)
 		move.l	objoff_30(a0),objoff_30(a1)
 		move.l	a0,objoff_38(a1)
