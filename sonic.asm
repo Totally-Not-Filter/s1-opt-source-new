@@ -1957,9 +1957,9 @@ GM_Sega:
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
 		lea	vdp_control_port,a6
-		move.w	#$8004,(a6)	; use 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8004,(a6)	; use 8-colour mode
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
 		move.w	#$8B03,(a6)	; full-screen vertical scrolling
 		clr.b	f_wtr_state.w
@@ -2063,11 +2063,11 @@ GM_Title:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$9001,(a6)	; 64-cell hscroll size
-		move.w	#$9200,(a6)	; window vertical position
+;		move.w	#$8004,(a6)	; 8-colour mode
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$9001,(a6)	; 64-cell hscroll size
+;		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)
 		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
 		clr.b	(f_wtr_state).w
@@ -2758,11 +2758,11 @@ Level_ClrRam:
 		bsr.w	ClearScreen
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8500+(vram_sprites>>9),(a6) ; set sprite table address
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8500+(vram_sprites>>9),(a6) ; set sprite table address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
-		move.w	#$8004,(a6)		; 8-colour mode
+;		move.w	#$8004,(a6)		; 8-colour mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
@@ -3212,7 +3212,7 @@ GM_Special:
 		disable_ints
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
-		move.w	#$8004,(a6)	; 8-colour mode
+;		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8A00+175,(v_hbla_hreg).w
 		move.w	#$9011,(a6)	; 128-cell hscroll size
 		move.w	(v_vdp_buffer1).w,d0
@@ -3329,8 +3329,8 @@ loc_47D4:
 
 		disable_ints
 		lea	(vdp_control_port).l,a6
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
 		bsr.w	ClearScreen
 		lea	(KosPM_TitleCard).l,a1 ; load title card patterns
@@ -3741,7 +3741,7 @@ GM_Continue:
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
 		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; 8 colour mode
+;		move.w	#$8004,(a6)	; 8 colour mode
 		move.w	#$8700,(a6)	; background colour
 		bsr.w	ClearScreen
 
@@ -3846,11 +3846,11 @@ GM_Ending:
 		bsr.w	ClearScreen
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8500+(vram_sprites>>9),(a6) ; set sprite table address
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8500+(vram_sprites>>9),(a6) ; set sprite table address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
-		move.w	#$8004,(a6)		; 8-colour mode
+;		move.w	#$8004,(a6)		; 8-colour mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
@@ -4065,11 +4065,11 @@ GM_Credits:
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
 		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)		; 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8004,(a6)		; 8-colour mode
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
-		move.w	#$9200,(a6)		; window vertical position
+;		move.w	#$9200,(a6)		; window vertical position
 		move.w	#$8B03,(a6)		; line scroll mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		clr.b	(f_wtr_state).w
@@ -4186,11 +4186,11 @@ TryAgainEnd:
 		clearRAM KosPlus_decomp_stored_registers, KosPlus_module_end
 		bsr.w	PaletteFadeOut
 		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; use 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
+;		move.w	#$8004,(a6)	; use 8-colour mode
+;		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
+;		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)	; 64-cell hscroll size
-		move.w	#$9200,(a6)	; window vertical position
+;		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8720,(a6)	; set background colour (line 3; colour 0)
 		clr.b	(f_wtr_state).w
