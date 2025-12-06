@@ -152,21 +152,21 @@ SetupValues:	dc.w $8000		; VDP register start number
 		dc.l vdp_control_port	; VDP control
 
 		dc.b 4			; VDP $80 - 8-colour mode
-		dc.b $14		; VDP $81 - Megadrive mode, DMA enable
-		dc.b ($C000>>10)	; VDP $82 - foreground nametable address
-		dc.b ($F000>>10)	; VDP $83 - window nametable address
-		dc.b ($E000>>13)	; VDP $84 - background nametable address
-		dc.b ($D800>>9)		; VDP $85 - sprite table address
+		dc.b $34		; VDP $81 - Megadrive mode, DMA enable
+		dc.b (vram_fg>>10)	; VDP $82 - foreground nametable address
+		dc.b (window_plane>>10)	; VDP $83 - window nametable address
+		dc.b (vram_bg>>13)	; VDP $84 - background nametable address
+		dc.b (vram_sprites>>9)		; VDP $85 - sprite table address
 		dc.b 0			; VDP $86 - unused
 		dc.b 0			; VDP $87 - background colour
 		dc.b 0			; VDP $88 - unused
 		dc.b 0			; VDP $89 - unused
-		dc.b 255		; VDP $8A - HBlank register
+		dc.b 0			; VDP $8A - HBlank register
 		dc.b 0			; VDP $8B - full screen scroll
 		dc.b $81		; VDP $8C - 40 cell display
-		dc.b ($DC00>>10)	; VDP $8D - hscroll table address
+		dc.b (vram_hscroll>>10)	; VDP $8D - hscroll table address
 		dc.b 0			; VDP $8E - unused
-		dc.b 1			; VDP $8F - VDP increment
+		dc.b 2			; VDP $8F - VDP increment
 		dc.b 1			; VDP $90 - 64 cell hscroll size
 		dc.b 0			; VDP $91 - window h position
 		dc.b 0			; VDP $92 - window v position
@@ -209,8 +209,6 @@ zStartupCodeEndLoc:
 		restore
 		padding off ; unfortunately our flags got reset so we have to set them again...
 
-		dc.w $8104		; VDP display mode
-		dc.w $8F02		; VDP increment
 		dc.l $C0000000		; CRAM write mode
 		dc.l $40000010		; VSRAM address 0
 
@@ -269,7 +267,6 @@ Z80InitLoop:
 ClrRAMLoop:
 		move.l	d0,-(a6)	; clear 4 bytes of RAM
 		dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
-		move.l	(a5)+,(a4)	; set VDP display mode and increment mode
 		move.l	(a5)+,(a4)	; set VDP to CRAM write
 
 		moveq	#$1F,d3	; set repeat times
@@ -337,7 +334,10 @@ GameInit:
 		beq.s	.notPAL		; if not, branch
 		bset	#f_pal,(Clone_Driver_RAM+SMPS_RAM.bitfield1).w
 .notPAL:
-		bsr.w	VDPSetupGame
+		move.w	#$8134,v_vdp_buffer1.w
+		move.w	#$8A00+223,v_hbla_hreg.w	; H-INT every 224th scanline
+		moveq	#0,d0
+		move.l	d0,v_scrposy_vdp.w
 		stopZ80
 		waitZ80
 		moveq	#$40,d0
@@ -663,59 +663,6 @@ ReadJoypads:
 		startZ80
 		rts
 ; End of function ReadJoypads
-
-
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
-
-VDPSetupGame:
-		lea	vdp_control_port,a0
-		lea	vdp_data_port-vdp_control_port(a0),a1
-		lea	VDPSetupArray(pc),a2
-		moveq	#bytesToWcnt(VDPSetupArray_End-VDPSetupArray),d7
-
-.setreg:
-		move.w	(a2)+,(a0)
-		dbf	d7,.setreg	; set the VDP registers
-
-		move.w	VDPSetupArray+2(pc),v_vdp_buffer1.w
-		move.w	#$8A00+223,v_hbla_hreg.w	; H-INT every 224th scanline
-		moveq	#0,d0
-		move.l	#$C0000000,vdp_control_port ; set VDP to CRAM write
-		moveq	#bytesToLcnt($80),d7
-
-.clrCRAM:
-		move.l	d0,(a1)
-		dbf	d7,.clrCRAM	; clear the CRAM
-
-		move.l	d0,v_scrposy_vdp.w
-		move.w	d1,-(sp)
-		fillVRAM	0,0,$10000	; clear the entirety of VRAM
-		move.w	(sp)+,d1
-		rts
-; End of function VDPSetupGame
-
-; ===========================================================================
-VDPSetupArray:	dc.w $8004		; 8-colour mode
-		dc.w $8134		; enable V.interrupts, enable DMA
-		dc.w $8200+(vram_fg>>10) ; set foreground nametable address
-		dc.w $8300+($A000>>10)	; set window nametable address
-		dc.w $8400+(vram_bg>>13) ; set background nametable address
-		dc.w $8500+(vram_sprites>>9) ; set sprite table address
-		dc.w $8600		; unused
-		dc.w $8700		; set background colour (palette entry 0)
-		dc.w $8800		; unused
-		dc.w $8900		; unused
-		dc.w $8A00		; default H.interrupt register
-		dc.w $8B00		; full-screen vertical scrolling
-		dc.w $8C81		; 40-cell display mode
-		dc.w $8D00+(vram_hscroll>>10) ; set background hscroll address
-		dc.w $8E00		; unused
-		dc.w $8F02		; set VDP increment size
-		dc.w $9001		; 64-cell hscroll size
-		dc.w $9100		; window horizontal position
-		dc.w $9200		; window vertical position
-VDPSetupArray_End:
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to clear the screen
