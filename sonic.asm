@@ -643,14 +643,12 @@ ReadJoypads:
 		stopZ80
 		waitZ80
 		move.b	#0,(a1)
-		nop	
-		nop	
+		or.l	d0,d0
 		move.b	(a1),d0
 		lsl.b	#2,d0
 		andi.b	#$C0,d0
 		move.b	#$40,(a1)
-		nop	
-		nop	
+		or.l	d0,d0
 		move.b	(a1),d1
 		andi.b	#$3F,d1
 		or.b	d1,d0
