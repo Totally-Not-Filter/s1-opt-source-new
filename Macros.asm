@@ -29,9 +29,10 @@ writeVRAM:	macro source,destination
 		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
-		move.w	#$4000+((destination)&$3FFF),(a5)
-		move.w	#$80+(((destination)&$C000)>>14),v_vdp_buffer2.w
-		move.w	v_vdp_buffer2.w,(a5)
+		move.l	#$40000000+(((destination)&$3FFF)<<16)+$80+(((destination)&$C000)>>14),d0
+		move.l	d0,(a5)
+		swap	d0
+		move.w	d0,v_vdp_buffer2.w
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -43,9 +44,10 @@ writeVRAMsrcdefined:	macro source,destination
 		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
-		move.w	#$4000+((destination)&$3FFF),(a5)
-		move.w	#$80+(((destination)&$C000)>>14),v_vdp_buffer2.w
-		move.w	v_vdp_buffer2.w,(a5)
+		move.l	#$40000000+(((destination)&$3FFF)<<16)+$80+(((destination)&$C000)>>14),d0
+		move.l	d0,(a5)
+		swap	d0
+		move.w	d0,v_vdp_buffer2.w
 		endm
 
 ; ---------------------------------------------------------------------------
@@ -58,9 +60,10 @@ writeCRAM:	macro source,destination
 		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
-		move.w	#$C000+(destination&$3FFF),(a5)
-		move.w	#$80+((destination&$C000)>>14),v_vdp_buffer2.w
-		move.w	v_vdp_buffer2.w,(a5)
+		move.l	#$C0000000+(((destination)&$3FFF)<<16)+$80+(((destination)&$C000)>>14),d0
+		move.l	d0,(a5)
+		swap	d0
+		move.w	d0,v_vdp_buffer2.w
 		endm
 
 ; ---------------------------------------------------------------------------
