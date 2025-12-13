@@ -591,6 +591,18 @@ sub_106E:
 ; End of function sub_106E
 
 ; ---------------------------------------------------------------------------
+; DMA copy data from 68K (ROM/RAM) to the CRAM
+; input: source, length, destination
+; ---------------------------------------------------------------------------
+
+DMAtoCRAM:	macro source,destination
+		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a0)
+		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a0)
+		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a0)
+		move.l	#$C0000000+(((destination)&$3FFF)<<16)+$80+(((destination)&$C000)>>14),(a0)
+		endm
+
+; ---------------------------------------------------------------------------
 ; Horizontal interrupt
 ; ---------------------------------------------------------------------------
 
@@ -602,16 +614,11 @@ HBlank:
 		tst.b	f_hbla_pal.w	; is palette set to change?
 		beq.s	.nochg		; if not, branch
 		clr.b	f_hbla_pal.w
-		movem.l	a0-a1,-(sp)
-		lea	vdp_data_port,a1
-		move.w	#$8A00+223,4(a1) ; reset HBlank register
-		lea	v_palette_water.w,a0 ; get palette from RAM
-		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
-	rept 32
-		move.l	(a0)+,(a1)	; move palette to CRAM
-	endr
+		move.l	a0,-(sp)
+		lea	vdp_control_port,a0
+		move.w	#$8A00+223,(a0) ; reset HBlank register
+		DMAtoCRAM	v_palette_water,0
 		movea.l	(sp)+,a0
-		movea.l	(sp)+,a1
 		tst.b	f_doupdatesinhblank.w
 		bne.s	loc_119E
 
